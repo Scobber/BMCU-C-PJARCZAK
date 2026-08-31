@@ -1,0 +1,1395 @@
+Archive member included to satisfy reference by file (symbol)
+
+.pio/build/dm_ams_b_010/libFrameworkNoneOSVariant.a(ch32v20x_adc.o)
+                              .pio/build/dm_ams_b_010/src/ADC_DMA.o (symbol from plugin) (ADC_DeInit)
+.pio/build/dm_ams_b_010/libFrameworkNoneOSVariant.a(ch32v20x_dma.o)
+                              .pio/build/dm_ams_b_010/src/ADC_DMA.o (symbol from plugin) (DMA_DeInit)
+.pio/build/dm_ams_b_010/libFrameworkNoneOSVariant.a(ch32v20x_flash.o)
+                              .pio/build/dm_ams_b_010/src/Flash_saves.o (symbol from plugin) (FLASH_Unlock)
+.pio/build/dm_ams_b_010/libFrameworkNoneOSVariant.a(ch32v20x_gpio.o)
+                              .pio/build/dm_ams_b_010/src/ADC_DMA.o (symbol from plugin) (GPIO_Init)
+.pio/build/dm_ams_b_010/libFrameworkNoneOSVariant.a(ch32v20x_misc.o)
+                              .pio/build/dm_ams_b_010/src/main.o (symbol from plugin) (NVIC_PriorityGroupConfig)
+.pio/build/dm_ams_b_010/libFrameworkNoneOSVariant.a(ch32v20x_rcc.o)
+                              .pio/build/dm_ams_b_010/src/ADC_DMA.o (symbol from plugin) (RCC_ADCCLKConfig)
+.pio/build/dm_ams_b_010/libFrameworkNoneOSVariant.a(ch32v20x_tim.o)
+                              .pio/build/dm_ams_b_010/src/Motion_control.o (symbol from plugin) (TIM_TimeBaseInit)
+.pio/build/dm_ams_b_010/libFrameworkNoneOSVariant.a(ch32v20x_usart.o)
+                              .pio/build/dm_ams_b_010/src/Debug_log.o (symbol from plugin) (USART_Init)
+.pio/build/dm_ams_b_010/libFrameworkNoneOSVariant.a(ch32v20x_wwdg.o)
+                              .pio/build/dm_ams_b_010/src/main.o (symbol from plugin) (WWDG_DeInit)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-init.o)
+                              .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o (__libc_init_array)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_ctzsi2.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__ctzsi2)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_udivdi3.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__udivdi3)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(adddf3.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__adddf3)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divdf3.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__divdf3)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(addsf3.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__addsf3)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divsf3.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__divsf3)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(eqsf2.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__eqsf2)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(gesf2.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__gesf2)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(lesf2.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__lesf2)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(mulsf3.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__mulsf3)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(subsf3.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__subsf3)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixsfsi.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__fixsfsi)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixunssfsi.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__fixunssfsi)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatsisf.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__floatsisf)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatunsisf.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__floatunsisf)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatundisf.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__floatundisf)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(extendsfdf2.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__extendsfdf2)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(truncdfsf2.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__truncdfsf2)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(save-restore.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (__riscv_save_12)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clz.o)
+                              /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_ctzsi2.o) (__clz_tab)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clzsi2.o)
+                              /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(adddf3.o) (__clzsi2)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcmp.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (memcmp)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcpy-asm.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (memcpy)
+/home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memset.o)
+                              /tmp/ccxKnriX.ltrans0.ltrans.o (memset)
+
+Discarded input sections
+
+ .text          0x0000000000000000        0x0 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .data          0x0000000000000000        0x0 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss           0x0000000000000000        0x0 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z6_writeiPci
+                0x0000000000000000        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z5_sbrki
+                0x0000000000000000       0x2e /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata._ZZ5_sbrkiE6curbrk
+                0x0000000000000000        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .debug_info    0x0000000000000000      0x248 /tmp/ccpWjpYq.debug.temp.o
+ .debug_abbrev  0x0000000000000000       0xbd /tmp/ccpWjpYq.debug.temp.o
+ .debug_line    0x0000000000000000       0x4c /tmp/ccpWjpYq.debug.temp.o
+ .debug_str     0x0000000000000000      0x262 /tmp/ccpWjpYq.debug.temp.o
+ .debug_line_str
+                0x0000000000000000      0x195 /tmp/ccpWjpYq.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccpWjpYq.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccVfKdTK.debug.temp.o
+ .debug_info    0x0000000000000000       0x2b /tmp/ccY4lsPq.debug.temp.o
+ .debug_abbrev  0x0000000000000000       0x21 /tmp/ccY4lsPq.debug.temp.o
+ .debug_line    0x0000000000000000       0x3a /tmp/ccY4lsPq.debug.temp.o
+ .debug_str     0x0000000000000000       0xd7 /tmp/ccY4lsPq.debug.temp.o
+ .debug_line_str
+                0x0000000000000000       0xdc /tmp/ccY4lsPq.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccY4lsPq.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccE3j2qz.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccQtfyHZ.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/cczzyx9O.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccjGNOux.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccoXb9bq.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccBcu17i.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccu8egu5.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccWt28tV.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccYiLXag.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccHCLII5.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/cclEDQpU.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccuTC3o7.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccbd847W.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/cc6aORr4.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/cc5xxDZO.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccUUsEyH.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccVgPSow.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccyULA62.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccyGssJq.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccsokhlC.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccjyPdZb.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccxsbJaX.debug.temp.o
+ .comment       0x0000000000000000       0x34 /tmp/ccfCkKvH.debug.temp.o
+ .text          0x0000000000000000        0x0 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+ .data          0x0000000000000000        0x0 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+ .bss           0x0000000000000000        0x0 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-init.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-init.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-init.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcmp.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcmp.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcmp.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcpy-asm.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcpy-asm.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memset.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memset.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_ctzsi2.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_ctzsi2.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_ctzsi2.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_udivdi3.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_udivdi3.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_udivdi3.o)
+ .eh_frame      0x0000000000000000       0x28 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_udivdi3.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(adddf3.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(adddf3.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(adddf3.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divdf3.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divdf3.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divdf3.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(addsf3.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(addsf3.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(addsf3.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divsf3.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divsf3.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divsf3.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(eqsf2.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(eqsf2.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(eqsf2.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(gesf2.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(gesf2.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(gesf2.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(lesf2.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(lesf2.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(lesf2.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(mulsf3.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(mulsf3.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(mulsf3.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(subsf3.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(subsf3.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(subsf3.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixsfsi.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixsfsi.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixsfsi.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixunssfsi.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixunssfsi.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixunssfsi.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatsisf.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatsisf.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatsisf.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatunsisf.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatunsisf.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatunsisf.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatundisf.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatundisf.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatundisf.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(extendsfdf2.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(extendsfdf2.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(extendsfdf2.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(truncdfsf2.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(truncdfsf2.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(truncdfsf2.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(save-restore.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(save-restore.o)
+ .eh_frame      0x0000000000000000       0xf8 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(save-restore.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clz.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clz.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clz.o)
+ .text          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clzsi2.o)
+ .data          0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clzsi2.o)
+ .bss           0x0000000000000000        0x0 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clzsi2.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x0000000000000000 0x000000000000f000 xr
+RAM              0x0000000020000000 0x0000000000005000 xrw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD .pio/build/dm_ams_b_010/FrameworkNoneOSCore/core_riscv.o
+LOAD /tmp/ccxKnriX.ltrans0.ltrans.o
+LOAD /tmp/ccpWjpYq.debug.temp.o
+LOAD /tmp/ccVfKdTK.debug.temp.o
+LOAD /tmp/ccY4lsPq.debug.temp.o
+LOAD /tmp/ccE3j2qz.debug.temp.o
+LOAD /tmp/ccQtfyHZ.debug.temp.o
+LOAD /tmp/cczzyx9O.debug.temp.o
+LOAD /tmp/ccjGNOux.debug.temp.o
+LOAD /tmp/ccoXb9bq.debug.temp.o
+LOAD /tmp/ccBcu17i.debug.temp.o
+LOAD /tmp/ccu8egu5.debug.temp.o
+LOAD /tmp/ccWt28tV.debug.temp.o
+LOAD /tmp/ccYiLXag.debug.temp.o
+LOAD /tmp/ccHCLII5.debug.temp.o
+LOAD /tmp/cclEDQpU.debug.temp.o
+LOAD /tmp/ccuTC3o7.debug.temp.o
+LOAD /tmp/ccbd847W.debug.temp.o
+LOAD /tmp/cc6aORr4.debug.temp.o
+LOAD /tmp/cc5xxDZO.debug.temp.o
+LOAD /tmp/ccUUsEyH.debug.temp.o
+LOAD /tmp/ccVgPSow.debug.temp.o
+LOAD /tmp/ccyULA62.debug.temp.o
+LOAD /tmp/ccyGssJq.debug.temp.o
+LOAD /tmp/ccsokhlC.debug.temp.o
+LOAD /tmp/ccjyPdZb.debug.temp.o
+LOAD /tmp/ccxsbJaX.debug.temp.o
+LOAD /tmp/ccfCkKvH.debug.temp.o
+LOAD .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+LOAD .pio/build/dm_ams_b_010/FrameworkNoneOSSSystem/system_ch32v20x.o
+LOAD .pio/build/dm_ams_b_010/FrameworkInitFini/cpp_support.o
+LOAD .pio/build/dm_ams_b_010/src/ADC_DMA.o
+LOAD .pio/build/dm_ams_b_010/src/Debug_log.o
+LOAD .pio/build/dm_ams_b_010/src/Flash_saves.o
+LOAD .pio/build/dm_ams_b_010/src/MC_PULL_calibration.o
+LOAD .pio/build/dm_ams_b_010/src/Motion_control.o
+LOAD .pio/build/dm_ams_b_010/src/_bus_hardware.o
+LOAD .pio/build/dm_ams_b_010/src/ahub_bus.o
+LOAD .pio/build/dm_ams_b_010/src/ams.o
+LOAD .pio/build/dm_ams_b_010/src/bambu_bus_ams.o
+LOAD .pio/build/dm_ams_b_010/src/crc_bus.o
+LOAD .pio/build/dm_ams_b_010/src/hal/time_hw.o
+LOAD .pio/build/dm_ams_b_010/src/main.o
+LOAD .pio/build/dm_ams_b_010/src/many_soft_AS5600.o
+LOAD .pio/build/dm_ams_b_010/src/ws2812.o
+START GROUP
+LOAD .pio/build/dm_ams_b_010/libFrameworkNoneOSVariant.a
+END GROUP
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libstdc++_nano.a
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libm_nano.a
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libc_nano.a
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a
+START GROUP
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libc_nano.a
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libnosys.a
+END GROUP
+START GROUP
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libc_nano.a
+LOAD /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libnosys.a
+END GROUP
+                0x0000000000000800                __stack_size = 0x800
+                [!provide]                        PROVIDE (_stack_size = __stack_size)
+
+.init           0x0000000000000000        0x4
+                0x0000000000000000                _sinit = .
+                0x0000000000000000                . = ALIGN (0x4)
+ *(SORT_NONE(.init))
+ .init          0x0000000000000000        0x4 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+                0x0000000000000000                _start
+                0x0000000000000004                . = ALIGN (0x4)
+                0x0000000000000004                _einit = .
+
+.vector         0x0000000000000004       0xfc
+ *(.vector)
+ .vector        0x0000000000000004       0xfc .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+                0x0000000000000100                . = ALIGN (0x40)
+
+.highcode_initlalign
+                0x0000000000000100        0x0
+                0x0000000000000100                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (_highcode_init_lma = .)
+
+.highcode_init  0x0000000020000000        0x0 load address 0x0000000000000100
+                [!provide]                        PROVIDE (_highcode_init_vma_start = .)
+                0x0000000020000000                . = ALIGN (0x400)
+ *(.vector)
+ *(SORT_NONE(.vector_handler))
+ *(.highcode_init)
+ *(.highcode_init.*)
+                0x0000000020000000                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (_highcode_init_vma_end = .)
+
+.highcodelalign
+                0x0000000000000100        0x0
+                0x0000000000000100                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (_highcode_lma = .)
+
+.highcode       0x0000000020000000        0x0 load address 0x0000000000000100
+                0x0000000020000000                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (_highcode_vma_start = .)
+ *(.highcode)
+ *(.highcode.*)
+ *(.highcode_lp)
+ *(.highcode_lp.*)
+                0x0000000020000000                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (_highcode_vma_end = .)
+
+.text           0x0000000000000100     0xbf78
+                0x0000000000000100                . = ALIGN (0x4)
+ *(.text)
+ .text          0x0000000000000100       0x16 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcpy-asm.o)
+                0x0000000000000100                memcpy
+ .text          0x0000000000000116       0x10 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memset.o)
+                0x0000000000000116                memset
+ .text          0x0000000000000126       0x60 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(save-restore.o)
+                0x0000000000000126                __riscv_save_12
+                0x000000000000012e                __riscv_save_8
+                0x000000000000012e                __riscv_save_11
+                0x000000000000012e                __riscv_save_9
+                0x000000000000012e                __riscv_save_10
+                0x000000000000013c                __riscv_save_7
+                0x000000000000013c                __riscv_save_4
+                0x000000000000013c                __riscv_save_6
+                0x000000000000013c                __riscv_save_5
+                0x0000000000000156                __riscv_save_1
+                0x0000000000000156                __riscv_save_3
+                0x0000000000000156                __riscv_save_2
+                0x0000000000000156                __riscv_save_0
+                0x0000000000000162                __riscv_restore_12
+                0x0000000000000166                __riscv_restore_10
+                0x0000000000000166                __riscv_restore_11
+                0x0000000000000166                __riscv_restore_8
+                0x0000000000000166                __riscv_restore_9
+                0x0000000000000170                __riscv_restore_5
+                0x0000000000000170                __riscv_restore_6
+                0x0000000000000170                __riscv_restore_4
+                0x0000000000000170                __riscv_restore_7
+                0x000000000000017a                __riscv_restore_3
+                0x000000000000017a                __riscv_restore_2
+                0x000000000000017a                __riscv_restore_0
+                0x000000000000017a                __riscv_restore_1
+ *(.text.*)
+ .text._ZL12filter_resetv
+                0x0000000000000186       0x4e /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL26process_half_update_filterPKm
+                0x00000000000001d4      0x164 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z12ADC_DMA_pollv
+                0x0000000000000338       0x52 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z17ADC_DMA_get_valuev
+                0x000000000000038a       0xb0 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z20ADC_DMA_filter_resetv
+                0x000000000000043a        0xe /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL14crc32_hw_wordsPKvm
+                0x0000000000000448       0x24 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL15adc_pull_raw_chiPKf
+                0x000000000000046c       0x1e /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL24dm_key_round_up_to_centif
+                0x000000000000048a       0x60 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL19pull_v_to_percent_fhf
+                0x00000000000004ea      0x110 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL19MC_PULL_ONLINE_readm
+                0x00000000000005fa      0x350 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL23Motion_control_defaultsv
+                0x000000000000094a       0x2e /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL26Motion_control_apply_savedv
+                0x0000000000000978       0x4a /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN9MOTOR_PID8caculateEff
+                0x00000000000009c2       0xae /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.startup._ZN14_MOTOR_CONTROLC2Ei
+                0x0000000000000a70       0x84 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN14_MOTOR_CONTROL10set_motionE20filament_motion_enumyy
+                0x0000000000000af4      0x532 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z22Motion_control_set_PWMhi
+                0x0000000000001026       0x60 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z18bus_uart1_dma_sendPht
+                0x0000000000001086       0x56 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z22get_filament_left_charPK4_ams
+                0x00000000000010dc       0x42 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.bus_crc8
+                0x000000000000111e       0x22 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z22ahubus_package_add_crcPh
+                0x0000000000001140       0x48 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z15package_add_crcPhi
+                0x0000000000001188       0x62 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.delay.part.0
+                0x00000000000011ea       0x2c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.delay    0x0000000000001216        0x6 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z17ADC_DMA_wait_fullv
+                0x000000000000121c       0x4a /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z35ams_datas_set_need_to_save_filamenth
+                0x0000000000001266       0x18 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z22ams_state_set_unloadedh
+                0x000000000000127e       0x24 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z10set_motionhhhh.part.0
+                0x00000000000012a2      0x546 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN12WS2812_class6updataEv
+                0x00000000000017e8       0xb6 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z10RGB_updatev
+                0x000000000000189e       0x82 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.FLASH_Lock
+                0x0000000000001920        0xe /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.FLASH_GetBank1Status
+                0x000000000000192e       0x16 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.FLASH_WaitForLastOperation
+                0x0000000000001944       0x20 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL16flash_prog_wordsmPKmm
+                0x0000000000001964       0xe0 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.FLASH_ErasePage_Fast
+                0x0000000000001a44       0x2a /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL14flash256_erasem.part.0
+                0x0000000000001a6e       0x6e /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.GPIO_Init
+                0x0000000000001adc       0xee /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many8stop_iicEv.constprop.0
+                0x0000000000001bca       0xfc /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many5set_hEPKP12GPIO_TypeDefPKt.constprop.0
+                0x0000000000001cc6       0x3a /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many5set_lEPKP12GPIO_TypeDefPKt.constprop.0
+                0x0000000000001d00       0x3a /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many11clear_datasEv.constprop.0
+                0x0000000000001d3a       0x32 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL20retract_mag_from_errff.part.0.constprop.0
+                0x0000000000001d6c       0xbc /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN14_MOTOR_CONTROL9hold_loadEffR9MOTOR_PIDRfRhS2_RbS2_S4_.constprop.0.isra.0
+                0x0000000000001e28      0x15c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z19ADC_DMA_gpio_analogv
+                0x0000000000001f84       0x3c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z32MC_PULL_detect_channels_insertedv
+                0x0000000000001fc0       0xb4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL13adc_calibrateP11ADC_TypeDef
+                0x0000000000002074       0x32 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z12ADC_DMA_initv.part.0
+                0x00000000000020a6      0x294 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN12WS2812_class4initEhP12GPIO_TypeDeft
+                0x000000000000233a       0xd0 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many17enable_gpio_clockEP12GPIO_TypeDef.constprop.0
+                0x000000000000240a       0x52 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN12WS2812_class14set_RGB_onlineEhhhhb.constprop.0
+                0x000000000000245c       0x24 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL14show_diag_stephhhii
+                0x0000000000002480       0x5a /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL16motor_motion_runiym
+                0x00000000000024da     0x26dc /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL9blink_allhhhiii.constprop.0
+                0x0000000000004bb6       0x66 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL9blink_oneihhhiii.constprop.0
+                0x0000000000004c1c       0x6c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL25flash_runtime_cache_clearv
+                0x0000000000004c88       0x34 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z20Flash_NVM_full_clearv
+                0x0000000000004cbc       0xae /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z16Flash_saves_initv
+                0x0000000000004d6a       0xee /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z25bambubus_long_package_getP25bambubus_long_packge_data
+                0x0000000000004e58       0xa2 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL26online_detect_build_packethh.constprop.0
+                0x0000000000004efa       0x4c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL11nvm256_readmmtPvtPtPm.constprop.0
+                0x0000000000004f46       0x70 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL19Motion_control_readv
+                0x0000000000004fb6       0x70 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL12nvm256_writemmtmPKvt.part.0.constprop.0
+                0x0000000000005026      0x110 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL19Motion_control_savev
+                0x0000000000005136       0x64 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z24MC_PULL_calibration_bootv
+                0x000000000000519a      0x824 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many12sda_mode_ipuEi.constprop.0
+                0x00000000000059be       0x52 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many11sda_mode_odEi.constprop.0
+                0x0000000000005a10       0x54 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many8read_iicEb.constprop.0
+                0x0000000000005a64      0x176 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many9write_iicEh.constprop.0
+                0x0000000000005bda      0x166 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many9start_iicEh.constprop.0
+                0x0000000000005d40       0xa4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many10updata_stuEv.constprop.0
+                0x0000000000005de4       0x8c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZN20AS5600_soft_IIC_many12updata_angleEv.constprop.0
+                0x0000000000005e70       0x82 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._Z22AS5600_distance_updatam
+                0x0000000000005ef2      0x1e2 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text._ZL13MOTOR_get_dirv
+                0x00000000000060d4      0x1d0 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.SystemInit
+                0x00000000000062a4       0xa8 /tmp/ccxKnriX.ltrans0.ltrans.o
+                0x00000000000062a4                SystemInit
+ .text.USART1_IRQHandler
+                0x000000000000634c      0x250 /tmp/ccxKnriX.ltrans0.ltrans.o
+                0x000000000000634c                USART1_IRQHandler
+ .text.startup.main
+                0x000000000000659c     0x287c /tmp/ccxKnriX.ltrans0.ltrans.o
+                0x000000000000659c                main
+ .text.startup._sub_I_65535_0.0
+                0x0000000000008e18      0x14e /tmp/ccxKnriX.ltrans0.ltrans.o
+ .text.vector_handler
+                0x0000000000008f66        0x2 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+                0x0000000000008f66                EXTI2_IRQHandler
+                0x0000000000008f66                TIM1_CC_IRQHandler
+                0x0000000000008f66                HardFault_Handler
+                0x0000000000008f66                SysTick_Handler
+                0x0000000000008f66                PVD_IRQHandler
+                0x0000000000008f66                NMI_Handler
+                0x0000000000008f66                EXTI3_IRQHandler
+                0x0000000000008f66                USBFS_IRQHandler
+                0x0000000000008f66                EXTI0_IRQHandler
+                0x0000000000008f66                I2C2_EV_IRQHandler
+                0x0000000000008f66                ADC1_2_IRQHandler
+                0x0000000000008f66                Break_Point_Handler
+                0x0000000000008f66                SPI1_IRQHandler
+                0x0000000000008f66                TAMPER_IRQHandler
+                0x0000000000008f66                Ecall_M_Mode_Handler
+                0x0000000000008f66                DMA1_Channel4_IRQHandler
+                0x0000000000008f66                USART3_IRQHandler
+                0x0000000000008f66                RTC_IRQHandler
+                0x0000000000008f66                DMA1_Channel7_IRQHandler
+                0x0000000000008f66                CAN1_RX1_IRQHandler
+                0x0000000000008f66                TIM4_IRQHandler
+                0x0000000000008f66                I2C1_EV_IRQHandler
+                0x0000000000008f66                DMA1_Channel6_IRQHandler
+                0x0000000000008f66                UART4_IRQHandler
+                0x0000000000008f66                TIM3_IRQHandler
+                0x0000000000008f66                RCC_IRQHandler
+                0x0000000000008f66                TIM1_TRG_COM_IRQHandler
+                0x0000000000008f66                DMA1_Channel1_IRQHandler
+                0x0000000000008f66                EXTI15_10_IRQHandler
+                0x0000000000008f66                DMA1_Channel8_IRQHandler
+                0x0000000000008f66                EXTI9_5_IRQHandler
+                0x0000000000008f66                SPI2_IRQHandler
+                0x0000000000008f66                DMA1_Channel5_IRQHandler
+                0x0000000000008f66                EXTI4_IRQHandler
+                0x0000000000008f66                USB_LP_CAN1_RX0_IRQHandler
+                0x0000000000008f66                USB_HP_CAN1_TX_IRQHandler
+                0x0000000000008f66                DMA1_Channel3_IRQHandler
+                0x0000000000008f66                TIM1_UP_IRQHandler
+                0x0000000000008f66                WWDG_IRQHandler
+                0x0000000000008f66                Ecall_U_Mode_Handler
+                0x0000000000008f66                TIM2_IRQHandler
+                0x0000000000008f66                SW_Handler
+                0x0000000000008f66                TIM1_BRK_IRQHandler
+                0x0000000000008f66                EXTI1_IRQHandler
+                0x0000000000008f66                RTCAlarm_IRQHandler
+                0x0000000000008f66                USART2_IRQHandler
+                0x0000000000008f66                I2C2_ER_IRQHandler
+                0x0000000000008f66                DMA1_Channel2_IRQHandler
+                0x0000000000008f66                CAN1_SCE_IRQHandler
+                0x0000000000008f66                FLASH_IRQHandler
+                0x0000000000008f66                USBFSWakeUp_IRQHandler
+                0x0000000000008f66                I2C1_ER_IRQHandler
+                0x0000000000008f66                USBWakeUp_IRQHandler
+ .text.handle_reset
+                0x0000000000008f68       0x8c .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+                0x0000000000008f68                handle_reset
+ .text.__libc_init_array
+                0x0000000000008ff4       0x5e /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-init.o)
+                0x0000000000008ff4                __libc_init_array
+ .text.memcmp   0x0000000000009052       0x24 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcmp.o)
+                0x0000000000009052                memcmp
+ .text.__ctzsi2
+                0x0000000000009076       0x66 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_ctzsi2.o)
+                0x0000000000009076                __ctzsi2
+ .text.__udivdi3
+                0x00000000000090dc      0x3a6 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_udivdi3.o)
+                0x00000000000090dc                __udivdi3
+ .text.__adddf3
+                0x0000000000009482      0x6e8 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(adddf3.o)
+                0x0000000000009482                __adddf3
+ .text.__divdf3
+                0x0000000000009b6a      0x5ae /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divdf3.o)
+                0x0000000000009b6a                __divdf3
+ .text.__addsf3
+                0x000000000000a118      0x368 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(addsf3.o)
+                0x000000000000a118                __addsf3
+ .text.__divsf3
+                0x000000000000a480      0x2ea /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divsf3.o)
+                0x000000000000a480                __divsf3
+ .text.__eqsf2  0x000000000000a76a       0x5e /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(eqsf2.o)
+                0x000000000000a76a                __nesf2
+                0x000000000000a76a                __eqsf2
+ .text.__gesf2  0x000000000000a7c8       0x96 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(gesf2.o)
+                0x000000000000a7c8                __gtsf2
+                0x000000000000a7c8                __gesf2
+ .text.__lesf2  0x000000000000a85e       0x98 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(lesf2.o)
+                0x000000000000a85e                __lesf2
+                0x000000000000a85e                __ltsf2
+ .text.__mulsf3
+                0x000000000000a8f6      0x2dc /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(mulsf3.o)
+                0x000000000000a8f6                __mulsf3
+ .text.__subsf3
+                0x000000000000abd2      0x38c /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(subsf3.o)
+                0x000000000000abd2                __subsf3
+ .text.__fixsfsi
+                0x000000000000af5e       0x60 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixsfsi.o)
+                0x000000000000af5e                __fixsfsi
+ .text.__fixunssfsi
+                0x000000000000afbe       0x52 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixunssfsi.o)
+                0x000000000000afbe                __fixunssfsi
+ .text.__floatsisf
+                0x000000000000b010       0xcc /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatsisf.o)
+                0x000000000000b010                __floatsisf
+ .text.__floatunsisf
+                0x000000000000b0dc       0xbc /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatunsisf.o)
+                0x000000000000b0dc                __floatunsisf
+ .text.__floatundisf
+                0x000000000000b198      0x12e /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatundisf.o)
+                0x000000000000b198                __floatundisf
+ .text.__extendsfdf2
+                0x000000000000b2c6       0xa6 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(extendsfdf2.o)
+                0x000000000000b2c6                __extendsfdf2
+ .text.__truncdfsf2
+                0x000000000000b36c      0x16c /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(truncdfsf2.o)
+                0x000000000000b36c                __truncdfsf2
+ .text.__clzsi2
+                0x000000000000b4d8       0x68 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clzsi2.o)
+                0x000000000000b4d8                __clzsi2
+ *(.rodata)
+ .rodata        0x000000000000b540      0x110 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *(.rodata*)
+ .rodata._ZL16motor_motion_runiym
+                0x000000000000b650       0x58 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .rodata.main   0x000000000000b6a8       0x14 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .rodata._ZL15AS5600_SDA_PORT
+                0x000000000000b6bc       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .rodata._ZL15AS5600_SCL_PORT
+                0x000000000000b6cc       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .rodata._ZZL28bambubus_build_static_serialvE3hex
+                0x000000000000b6dc       0x11 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x000000000000b6ed        0x3 
+ .rodata._ZL27before_on_use_sniff_7f_rows
+                0x000000000000b6f0      0x438 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .rodata._ZL45_bambubus_ams_motion_package_struct_init_data
+                0x000000000000bb28       0x2c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .rodata._ZL49_bambubus_ams_stu_motion_package_struct_init_data
+                0x000000000000bb54       0x3c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .rodata.g_crc8_tbl
+                0x000000000000bb90      0x100 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .rodata.g_crc16_tbl
+                0x000000000000bc90      0x200 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .rodata.__divdf3
+                0x000000000000be90       0x40 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divdf3.o)
+ .rodata.__divsf3
+                0x000000000000bed0       0xa8 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divsf3.o)
+ .rodata.__clz_tab
+                0x000000000000bf78      0x100 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clz.o)
+                0x000000000000bf78                __clz_tab
+ *(.gnu.linkonce.t.*)
+                0x000000000000c078                . = ALIGN (0x4)
+                0x000000000000c078                __fsymtab_start = .
+ *(FSymTab)
+                0x000000000000c078                __fsymtab_end = .
+                0x000000000000c078                . = ALIGN (0x4)
+                0x000000000000c078                __vsymtab_start = .
+ *(VSymTab)
+                0x000000000000c078                __vsymtab_end = .
+                0x000000000000c078                . = ALIGN (0x4)
+                0x000000000000c078                . = ALIGN (0x4)
+                0x000000000000c078                __rt_init_start = .
+ *(SORT_BY_NAME(.rti_fn*))
+                0x000000000000c078                __rt_init_end = .
+                0x000000000000c078                . = ALIGN (0x4)
+                0x000000000000c078                . = ALIGN (0x4)
+                0x000000000000c078                __rtmsymtab_start = .
+ *(RTMSymTab)
+                0x000000000000c078                __rtmsymtab_end = .
+                0x000000000000c078                . = ALIGN (0x4)
+
+.rela.dyn       0x000000000000c078        0x0
+ .rela.init     0x000000000000c078        0x0 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+ .rela.vector   0x000000000000c078        0x0 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+ .rela.text.handle_reset
+                0x000000000000c078        0x0 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+ .rela.text.__libc_init_array
+                0x000000000000c078        0x0 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+
+.fini           0x000000000000c078        0x0
+ *(SORT_NONE(.fini))
+                0x000000000000c078                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (_etext = .)
+                [!provide]                        PROVIDE (_eitcm = .)
+
+.preinit_array  0x000000000000c078        0x0
+                0x000000000000c078                PROVIDE (__preinit_array_start = .)
+ *(.preinit_array)
+                0x000000000000c078                PROVIDE (__preinit_array_end = .)
+
+.init_array     0x000000000000c078        0x4
+                0x000000000000c078                PROVIDE (__init_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*))
+ *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
+ .init_array    0x000000000000c078        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+                0x000000000000c07c                PROVIDE (__init_array_end = .)
+
+.fini_array     0x000000000000c07c        0x0
+                [!provide]                        PROVIDE (__fini_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*))
+ *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
+                [!provide]                        PROVIDE (__fini_array_end = .)
+
+.ctors
+ *crtbegin.o(.ctors)
+ *crtbegin?.o(.ctors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+ *(SORT_BY_NAME(.ctors.*))
+ *(.ctors)
+
+.dtors
+ *crtbegin.o(.dtors)
+ *crtbegin?.o(.dtors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+ *(SORT_BY_NAME(.dtors.*))
+ *(.dtors)
+
+.dalign         0x0000000020000000        0x0 load address 0x000000000000c07c
+                0x0000000020000000                . = ALIGN (0x4)
+                0x0000000020000000                PROVIDE (_data_vma = .)
+
+.dlalign        0x000000000000c07c        0x0
+                0x000000000000c07c                . = ALIGN (0x4)
+                0x000000000000c07c                PROVIDE (_data_lma = .)
+
+.data           0x0000000020000000      0x364 load address 0x000000000000c07c
+ *(.gnu.linkonce.r.*)
+ *(.data .data.*)
+ .data.AHBPrescTable
+                0x0000000020000000       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .data.APBAHBPrescTable
+                0x0000000020000010       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .data.online_detect_res
+                0x0000000020000020       0x1d /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x000000002000003d        0x3 
+ .data.long_packge_filament
+                0x0000000020000040       0x83 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x00000000200000c3        0x1 
+ .data.long_packge_version_version_and_name_AMS08
+                0x00000000200000c4       0x15 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x00000000200000d9        0x3 
+ .data.long_packge_version_serial_number
+                0x00000000200000dc       0x42 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x000000002000011e        0x2 
+ .data._ZL25filament_pull_back_target
+                0x0000000020000120       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .data._ZL16g_pull_speed_set
+                0x0000000020000130       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .data._ZL13MC_PULL_pct_f
+                0x0000000020000140       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .data._ZL15MC_PULL_stu_raw
+                0x0000000020000150       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .data.MC_DM_KEY_NONE_THRESH
+                0x0000000020000160       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .data.MC_PULL_V_MAX
+                0x0000000020000170       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .data.MC_PULL_V_MIN
+                0x0000000020000180       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *(.gnu.linkonce.d.*)
+                0x0000000020000190                . = ALIGN (0x8)
+                0x0000000020000990                PROVIDE (__global_pointer$ = (. + 0x800))
+ *(.sdata .sdata.*)
+ .sdata.SystemCoreClock
+                0x0000000020000190        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata._ZL17g_iic_delay_ticks
+                0x0000000020000194        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata.ADCPrescTable
+                0x0000000020000198        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata._ZL30before_on_use_sniff_7f_channel
+                0x000000002000019c        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata._ZL24online_detect_prefix_now
+                0x000000002000019d        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x000000002000019e        0x2 
+ .sdata._ZL9g_hold_ch
+                0x00000000200001a0        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata._ZL11g_loaded_ch
+                0x00000000200001a4        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x00000000200001a5        0x3 
+ .sdata._ZL9dm_loaded
+                0x00000000200001a8        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata.time_hw_tpus
+                0x00000000200001ac        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata.MC_PULL_pct
+                0x00000000200001b0        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata.MC_PULL_POLARITY
+                0x00000000200001b4        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata._ZL18g_sta_saved_loaded
+                0x00000000200001b8        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x00000000200001b9        0x3 
+ .sdata.time_hw_tpms
+                0x00000000200001bc        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sdata._ZL7g_scale
+                0x00000000200001c0        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *(.sdata2.*)
+ *(.gnu.linkonce.s.*)
+                0x00000000200001c8                . = ALIGN (0x8)
+ *fill*         0x00000000200001c4        0x4 
+ *(.srodata.cst16)
+ *(.srodata.cst8)
+ .srodata.cst8  0x00000000200001c8       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *(.srodata.cst4)
+ .srodata.cst4  0x00000000200001d8      0x16c /tmp/ccxKnriX.ltrans0.ltrans.o
+ *(.srodata.cst2)
+ *(.srodata .srodata.*)
+ .srodata._ZL14AS5600_SDA_PIN
+                0x0000000020000344        0x8 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .srodata._ZL14AS5600_SCL_PIN
+                0x000000002000034c        0x8 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .srodata._ZL30ahubus_host_package_query_init
+                0x0000000020000354        0x8 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .srodata._ZL28ahubus_host_package_set_init
+                0x000000002000035c        0x8 /tmp/ccxKnriX.ltrans0.ltrans.o
+                0x0000000020000364                . = ALIGN (0x4)
+                0x0000000020000364                PROVIDE (_edata = .)
+
+.bss            0x0000000020000368     0x28e8 load address 0x000000000000c3e0
+                0x0000000020000368                . = ALIGN (0x4)
+                0x0000000020000368                PROVIDE (_sbss = .)
+ *(.sbss*)
+ .sbss.MCU_Version
+                0x0000000020000368        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x0000000020000369        0x3 
+ .sbss._ZL18g_ws2812_rst_ticks
+                0x000000002000036c        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss.NVIC_Priority_Group
+                0x0000000020000370        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZZ10ahubus_runvE8deadline
+                0x0000000020000374        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL28before_on_use_sniff_7f_index
+                0x0000000020000378        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL29before_on_use_sniff_7f_active
+                0x0000000020000379        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss.package_num
+                0x000000002000037a        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL19online_detect_phase
+                0x000000002000037b        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL15have_registered
+                0x000000002000037c        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x000000002000037d        0x3 
+ .sbss.set_filament_res_type2
+                0x0000000020000380        0x3 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x0000000020000383        0x1 
+ .sbss._ZZ12bambubus_runvE16last_hb_deadline
+                0x0000000020000384        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL15g_hold_t0_ticks
+                0x0000000020000388        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL18g_time_rem_ticks32
+                0x000000002000038c        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL11g_time_ms64
+                0x0000000020000390        0x8 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL19g_time_last_ticks64
+                0x0000000020000398        0x8 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL15g_time_tpm_last
+                0x00000000200003a0        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL13g_time_inited
+                0x00000000200003a4        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x00000000200003a5        0x3 
+ .sbss._ZZ4mainE5error
+                0x00000000200003a8        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL11g_fil_dirty
+                0x00000000200003ac        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x00000000200003ad        0x3 
+ .sbss._ZZ10RGB_updatevE4last
+                0x00000000200003b0        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL13g_state_dirty
+                0x00000000200003b4        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL30last_before_on_use_motion_flag
+                0x00000000200003b5        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL12count_on_use
+                0x00000000200003b6        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x00000000200003b7        0x1 
+ .sbss._ZL27bambubus_heartbeat_deadline
+                0x00000000200003b8        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL14before_pb_sign
+                0x00000000200003bc        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZZN14_MOTOR_CONTROL3runEfyE9pb_active
+                0x00000000200003c0        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL19auto_unload_blocked
+                0x00000000200003c4        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL15auto_unload_arm
+                0x00000000200003c8        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL18auto_unload_active
+                0x00000000200003cc        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZZL16motor_motion_runiymE10last_ticks
+                0x00000000200003d0        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZZL16motor_motion_runiymE15have_last_ticks
+                0x00000000200003d4        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x00000000200003d5        0x3 
+ .sbss._ZL16dm_autoload_gate
+                0x00000000200003d8        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL11dm_auto_try
+                0x00000000200003dc        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL13dm_auto_state
+                0x00000000200003e0        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZZ22AS5600_distance_updatamE6was_ok
+                0x00000000200003e4        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL13g_as5600_good
+                0x00000000200003e8        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL17g_as5600_okstreak
+                0x00000000200003ec        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL13g_as5600_fail
+                0x00000000200003f0        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZZ22AS5600_distance_updatamE10last_ticks
+                0x00000000200003f4        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZZ22AS5600_distance_updatamE15have_last_ticks
+                0x00000000200003f8        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x00000000200003f9        0x3 
+ .sbss._ZZ22AS5600_distance_updatamE14last_stu_ticks
+                0x00000000200003fc        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZZ22AS5600_distance_updatamE15last_poll_ticks
+                0x0000000020000400        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL18g_on_use_jam_latch
+                0x0000000020000404        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL18g_on_use_low_latch
+                0x0000000020000408        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL11MC_PULL_stu
+                0x000000002000040c        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL13dm_fail_latch
+                0x0000000020000410        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL17MC_ONLINE_key_stu
+                0x0000000020000414        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZZL19MC_PULL_ONLINE_readmE10gst_active
+                0x0000000020000418        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZZL19MC_PULL_ONLINE_readmE8gst_step
+                0x000000002000041c        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss.filament_channel_inserted
+                0x0000000020000420        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL16g_sta_have_saved
+                0x0000000020000424        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x0000000020000425        0x1 
+ .sbss._ZL10g_sta_slot
+                0x0000000020000426        0x2 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL9g_sta_seq
+                0x0000000020000428        0x2 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x000000002000042a        0x2 
+ .sbss._ZL17g_fil_first_empty
+                0x000000002000042c        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL10g_fil_have
+                0x0000000020000430        0x4 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL16g_adc_dma_inited
+                0x0000000020000434        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL11g_acc_dirty
+                0x0000000020000435        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL6g_v_rd
+                0x0000000020000436        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL15g_blocks_filled
+                0x0000000020000437        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .sbss._ZL10g_ring_idx
+                0x0000000020000438        0x1 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *(.gnu.linkonce.sb.*)
+ *(.bss*)
+ *fill*         0x0000000020000439        0x3 
+ .bss.bus_uart1_dma_init_structure
+                0x000000002000043c       0x2c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss.printer_data_long
+                0x0000000020000468       0x11 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x0000000020000479        0x3 
+ .bss.SYS_RGB   0x000000002000047c       0x30 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL24time_sendout_onuse_ticks
+                0x00000000200004ac       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss.bus_port_to_host
+                0x00000000200004bc     0x142c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL15g_pull_start_ms
+                0x00000000200018e8       0x20 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL16before_pb_last_m
+                0x0000000020001908       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL21before_pb_retracted_m
+                0x0000000020001918       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL25filament_pull_back_meters
+                0x0000000020001928       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZZN14_MOTOR_CONTROL3runEfyE7stall_s
+                0x0000000020001938       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZZN14_MOTOR_CONTROL3runEfyE14block_until_ms
+                0x0000000020001948       0x20 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL15g_pull_remain_m
+                0x0000000020001968       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL23auto_unload_empty_t0_ms
+                0x0000000020001978       0x20 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL24auto_unload_active_t0_ms
+                0x0000000020001998       0x20 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL21auto_unload_arm_t0_ms
+                0x00000000200019b8       0x20 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss.MOTOR_CONTROL
+                0x00000000200019d8      0x260 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL21filament_now_position
+                0x0000000020001c38       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL20dm_loaded_drop_t0_ms
+                0x0000000020001c48       0x20 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL14dm_auto_last_m
+                0x0000000020001c68       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL16dm_auto_remain_m
+                0x0000000020001c78       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL13dm_auto_t0_ms
+                0x0000000020001c88       0x20 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss.as5600_distance_save
+                0x0000000020001ca8       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss.speed_as5600
+                0x0000000020001cb8       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss.MC_AS5600
+                0x0000000020001cc8       0x8c /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZN14_MOTOR_CONTROL6x_prevE
+                0x0000000020001d54       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *fill*         0x0000000020001d64        0x4 
+ .bss._ZL21g_last_on_use_exit_ms
+                0x0000000020001d68       0x20 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL18g_on_use_hi_pwm_us
+                0x0000000020001d88       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss.Motion_control_data_save
+                0x0000000020001d98       0x18 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss.ams       0x0000000020001db0      0x450 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZZL19MC_PULL_ONLINE_readmE16gst_act_t0_ticks
+                0x0000000020002200       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZZL19MC_PULL_ONLINE_readmE12gst_t0_ticks
+                0x0000000020002210       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss.MC_PULL_V_OFFSET
+                0x0000000020002220       0x10 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss.RGBOUT    0x0000000020002230       0xc0 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL10g_fil_last
+                0x00000000200022f0       0x80 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL9g_dma_buf
+                0x0000000020002370      0x800 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL3g_v   0x0000000020002b70       0x40 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL10g_ring_sum
+                0x0000000020002bb0       0x80 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .bss._ZL9g_acc_sum
+                0x0000000020002c30       0x20 /tmp/ccxKnriX.ltrans0.ltrans.o
+ *(.gnu.linkonce.b.*)
+ *(COMMON*)
+                0x0000000020002c50                . = ALIGN (0x4)
+                0x0000000020002c50                PROVIDE (_ebss = .)
+                0x0000000020002c50                PROVIDE (_end = _ebss)
+                [!provide]                        PROVIDE (end = .)
+
+.stack          0x0000000020004800      0x800
+                0x0000000020004800                PROVIDE (_heap_end = .)
+                0x0000000020004800                . = ALIGN (0x4)
+                [!provide]                        PROVIDE (_susrstack = .)
+                0x0000000020005000                . = (. + __stack_size)
+ *fill*         0x0000000020004800      0x800 
+                0x0000000020005000                PROVIDE (_eusrstack = .)
+                0x0000000020005000                __freertos_irq_stack_top = .
+OUTPUT(.pio/build/dm_ams_b_010/firmware.elf elf32-littleriscv)
+
+.debug_info     0x0000000000000000    0x1df37
+ .debug_info    0x0000000000000000     0xd4ea /tmp/ccxKnriX.ltrans0.ltrans.o
+ .debug_info    0x000000000000d4ea      0x20d /tmp/ccVfKdTK.debug.temp.o
+                0x000000000000d4ea                system_ch32v20x.c.b354d070
+ .debug_info    0x000000000000d6f7      0xb5a /tmp/ccE3j2qz.debug.temp.o
+                0x000000000000d6f7                ADC_DMA.cpp.81f48fac
+ .debug_info    0x000000000000e251      0x959 /tmp/ccQtfyHZ.debug.temp.o
+                0x000000000000e251                Debug_log.cpp.08f9b926
+ .debug_info    0x000000000000ebaa      0xd20 /tmp/cczzyx9O.debug.temp.o
+                0x000000000000ebaa                Flash_saves.cpp.f7fa723f
+ .debug_info    0x000000000000f8ca     0x1694 /tmp/ccjGNOux.debug.temp.o
+                0x000000000000f8ca                MC_PULL_calibration.cpp.947435e8
+ .debug_info    0x0000000000010f5e     0x349b /tmp/ccoXb9bq.debug.temp.o
+                0x0000000000010f5e                Motion_control.cpp.2dd1fe4e
+ .debug_info    0x00000000000143f9      0xb47 /tmp/ccBcu17i.debug.temp.o
+                0x00000000000143f9                g_bus_hardware.cpp.674f74f0
+ .debug_info    0x0000000000014f40      0xc02 /tmp/ccu8egu5.debug.temp.o
+                0x0000000000014f40                ahub_bus.cpp.1c084fd8
+ .debug_info    0x0000000000015b42      0x3ee /tmp/ccWt28tV.debug.temp.o
+                0x0000000000015b42                ams.cpp.d6548320
+ .debug_info    0x0000000000015f30     0x170b /tmp/ccYiLXag.debug.temp.o
+                0x0000000000015f30                bambu_bus_ams.cpp.f1682fb9
+ .debug_info    0x000000000001763b      0x177 /tmp/ccHCLII5.debug.temp.o
+                0x000000000001763b                crc_bus.c.02c7d7d2
+ .debug_info    0x00000000000177b2      0x1e1 /tmp/cclEDQpU.debug.temp.o
+                0x00000000000177b2                time_hw.c.230a0375
+ .debug_info    0x0000000000017993      0xdcf /tmp/ccuTC3o7.debug.temp.o
+                0x0000000000017993                main.cpp.6ff5e8d6
+ .debug_info    0x0000000000018762      0xb00 /tmp/ccbd847W.debug.temp.o
+                0x0000000000018762                many_soft_AS5600.cpp.2e7fba52
+ .debug_info    0x0000000000019262      0x648 /tmp/cc6aORr4.debug.temp.o
+                0x0000000000019262                ws2812.cpp.3d09c2b0
+ .debug_info    0x00000000000198aa      0x9fa /tmp/cc5xxDZO.debug.temp.o
+                0x00000000000198aa                ch32v20x_adc.c.429ec6ae
+ .debug_info    0x000000000001a2a4      0x370 /tmp/ccUUsEyH.debug.temp.o
+                0x000000000001a2a4                ch32v20x_dma.c.3d2e57ec
+ .debug_info    0x000000000001a614      0x7e6 /tmp/ccVgPSow.debug.temp.o
+                0x000000000001a614                ch32v20x_flash.c.2e6b825b
+ .debug_info    0x000000000001adfa      0x5d1 /tmp/ccyULA62.debug.temp.o
+                0x000000000001adfa                ch32v20x_gpio.c.08c3caa4
+ .debug_info    0x000000000001b3cb      0x50f /tmp/ccyGssJq.debug.temp.o
+                0x000000000001b3cb                ch32v20x_misc.c.8cfffb51
+ .debug_info    0x000000000001b8da      0x6c4 /tmp/ccsokhlC.debug.temp.o
+                0x000000000001b8da                ch32v20x_rcc.c.92a74e71
+ .debug_info    0x000000000001bf9e     0x1643 /tmp/ccjyPdZb.debug.temp.o
+                0x000000000001bf9e                ch32v20x_tim.c.c212f015
+ .debug_info    0x000000000001d5e1      0x774 /tmp/ccxsbJaX.debug.temp.o
+                0x000000000001d5e1                ch32v20x_usart.c.408f4bd8
+ .debug_info    0x000000000001dd55      0x1bf /tmp/ccfCkKvH.debug.temp.o
+                0x000000000001dd55                ch32v20x_wwdg.c.13394d49
+ .debug_info    0x000000000001df14       0x23 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+
+.debug_abbrev   0x0000000000000000     0x3e2f
+ .debug_abbrev  0x0000000000000000      0x252 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .debug_abbrev  0x0000000000000252      0x143 /tmp/ccVfKdTK.debug.temp.o
+ .debug_abbrev  0x0000000000000395      0x2d4 /tmp/ccE3j2qz.debug.temp.o
+ .debug_abbrev  0x0000000000000669      0x208 /tmp/ccQtfyHZ.debug.temp.o
+ .debug_abbrev  0x0000000000000871      0x2d3 /tmp/cczzyx9O.debug.temp.o
+ .debug_abbrev  0x0000000000000b44      0x3d8 /tmp/ccjGNOux.debug.temp.o
+ .debug_abbrev  0x0000000000000f1c      0x7ac /tmp/ccoXb9bq.debug.temp.o
+ .debug_abbrev  0x00000000000016c8      0x35e /tmp/ccBcu17i.debug.temp.o
+ .debug_abbrev  0x0000000000001a26      0x405 /tmp/ccu8egu5.debug.temp.o
+ .debug_abbrev  0x0000000000001e2b      0x1f4 /tmp/ccWt28tV.debug.temp.o
+ .debug_abbrev  0x000000000000201f      0x46e /tmp/ccYiLXag.debug.temp.o
+ .debug_abbrev  0x000000000000248d       0xc7 /tmp/ccHCLII5.debug.temp.o
+ .debug_abbrev  0x0000000000002554      0x101 /tmp/cclEDQpU.debug.temp.o
+ .debug_abbrev  0x0000000000002655      0x486 /tmp/ccuTC3o7.debug.temp.o
+ .debug_abbrev  0x0000000000002adb      0x2d3 /tmp/ccbd847W.debug.temp.o
+ .debug_abbrev  0x0000000000002dae      0x23f /tmp/cc6aORr4.debug.temp.o
+ .debug_abbrev  0x0000000000002fed      0x182 /tmp/cc5xxDZO.debug.temp.o
+ .debug_abbrev  0x000000000000316f      0x16b /tmp/ccUUsEyH.debug.temp.o
+ .debug_abbrev  0x00000000000032da      0x1c3 /tmp/ccVgPSow.debug.temp.o
+ .debug_abbrev  0x000000000000349d      0x1e7 /tmp/ccyULA62.debug.temp.o
+ .debug_abbrev  0x0000000000003684      0x164 /tmp/ccyGssJq.debug.temp.o
+ .debug_abbrev  0x00000000000037e8      0x1c9 /tmp/ccsokhlC.debug.temp.o
+ .debug_abbrev  0x00000000000039b1      0x1db /tmp/ccjyPdZb.debug.temp.o
+ .debug_abbrev  0x0000000000003b8c      0x184 /tmp/ccxsbJaX.debug.temp.o
+ .debug_abbrev  0x0000000000003d10      0x10d /tmp/ccfCkKvH.debug.temp.o
+ .debug_abbrev  0x0000000000003e1d       0x12 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+
+.debug_loclists
+                0x0000000000000000     0xcdbb
+ .debug_loclists
+                0x0000000000000000     0xcdbb /tmp/ccxKnriX.ltrans0.ltrans.o
+
+.debug_aranges  0x0000000000000000      0x2b0
+ .debug_aranges
+                0x0000000000000000      0x280 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .debug_aranges
+                0x0000000000000280       0x30 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+
+.debug_rnglists
+                0x0000000000000000     0x3523
+ .debug_rnglists
+                0x0000000000000000     0x3503 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .debug_rnglists
+                0x0000000000003503       0x20 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+
+.debug_line     0x0000000000000000    0x17137
+ .debug_line    0x0000000000000000    0x16504 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .debug_line    0x0000000000016504       0x63 /tmp/ccVfKdTK.debug.temp.o
+ .debug_line    0x0000000000016567       0x7b /tmp/ccE3j2qz.debug.temp.o
+ .debug_line    0x00000000000165e2       0x89 /tmp/ccQtfyHZ.debug.temp.o
+ .debug_line    0x000000000001666b       0x88 /tmp/cczzyx9O.debug.temp.o
+ .debug_line    0x00000000000166f3       0xaf /tmp/ccjGNOux.debug.temp.o
+ .debug_line    0x00000000000167a2       0x99 /tmp/ccoXb9bq.debug.temp.o
+ .debug_line    0x000000000001683b       0x81 /tmp/ccBcu17i.debug.temp.o
+ .debug_line    0x00000000000168bc       0x9c /tmp/ccu8egu5.debug.temp.o
+ .debug_line    0x0000000000016958       0x51 /tmp/ccWt28tV.debug.temp.o
+ .debug_line    0x00000000000169a9       0x85 /tmp/ccYiLXag.debug.temp.o
+ .debug_line    0x0000000000016a2e       0x4c /tmp/ccHCLII5.debug.temp.o
+ .debug_line    0x0000000000016a7a       0x5a /tmp/cclEDQpU.debug.temp.o
+ .debug_line    0x0000000000016ad4       0xc3 /tmp/ccuTC3o7.debug.temp.o
+ .debug_line    0x0000000000016b97       0x76 /tmp/ccbd847W.debug.temp.o
+ .debug_line    0x0000000000016c0d       0x7b /tmp/cc6aORr4.debug.temp.o
+ .debug_line    0x0000000000016c88       0x68 /tmp/cc5xxDZO.debug.temp.o
+ .debug_line    0x0000000000016cf0       0x63 /tmp/ccUUsEyH.debug.temp.o
+ .debug_line    0x0000000000016d53       0x63 /tmp/ccVgPSow.debug.temp.o
+ .debug_line    0x0000000000016db6       0x68 /tmp/ccyULA62.debug.temp.o
+ .debug_line    0x0000000000016e1e       0x63 /tmp/ccyGssJq.debug.temp.o
+ .debug_line    0x0000000000016e81       0x63 /tmp/ccsokhlC.debug.temp.o
+ .debug_line    0x0000000000016ee4       0x68 /tmp/ccjyPdZb.debug.temp.o
+ .debug_line    0x0000000000016f4c       0x68 /tmp/ccxsbJaX.debug.temp.o
+ .debug_line    0x0000000000016fb4       0x63 /tmp/ccfCkKvH.debug.temp.o
+ .debug_line    0x0000000000017017      0x120 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+
+.debug_str      0x0000000000000000     0x73ce
+ .debug_str     0x0000000000000000      0x204 /tmp/ccxKnriX.ltrans0.ltrans.o
+                                        0x226 (size before relaxing)
+ .debug_str     0x0000000000000204      0x202 /tmp/ccVfKdTK.debug.temp.o
+                                        0x277 (size before relaxing)
+ .debug_str     0x0000000000000406      0x884 /tmp/ccE3j2qz.debug.temp.o
+                                        0xa24 (size before relaxing)
+ .debug_str     0x0000000000000c8a      0x601 /tmp/ccQtfyHZ.debug.temp.o
+                                        0xb90 (size before relaxing)
+ .debug_str     0x000000000000128b      0x770 /tmp/cczzyx9O.debug.temp.o
+                                        0xa89 (size before relaxing)
+ .debug_str     0x00000000000019fb      0xb21 /tmp/ccjGNOux.debug.temp.o
+                                        0xef2 (size before relaxing)
+ .debug_str     0x000000000000251c     0x1fbb /tmp/ccoXb9bq.debug.temp.o
+                                       0x2b1d (size before relaxing)
+ .debug_str     0x00000000000044d7      0x346 /tmp/ccBcu17i.debug.temp.o
+                                        0xe16 (size before relaxing)
+ .debug_str     0x000000000000481d      0x3b8 /tmp/ccu8egu5.debug.temp.o
+                                        0xb28 (size before relaxing)
+ .debug_str     0x0000000000004bd5       0x43 /tmp/ccWt28tV.debug.temp.o
+                                        0x46d (size before relaxing)
+ .debug_str     0x0000000000004c18      0xa8a /tmp/ccYiLXag.debug.temp.o
+                                       0x137b (size before relaxing)
+ .debug_str     0x00000000000056a2       0x17 /tmp/ccHCLII5.debug.temp.o
+                                        0x1c5 (size before relaxing)
+ .debug_str     0x00000000000056b9       0x45 /tmp/cclEDQpU.debug.temp.o
+                                        0x231 (size before relaxing)
+ .debug_str     0x00000000000056fe      0x15e /tmp/ccuTC3o7.debug.temp.o
+                                        0xecf (size before relaxing)
+ .debug_str     0x000000000000585c       0xc8 /tmp/ccbd847W.debug.temp.o
+                                        0x9a6 (size before relaxing)
+ .debug_str     0x0000000000005924       0x25 /tmp/cc6aORr4.debug.temp.o
+                                        0x5d2 (size before relaxing)
+ .debug_str     0x0000000000005949      0x3e9 /tmp/cc5xxDZO.debug.temp.o
+                                        0x7d7 (size before relaxing)
+ .debug_str     0x0000000000005d32       0xad /tmp/ccUUsEyH.debug.temp.o
+                                        0x3b3 (size before relaxing)
+ .debug_str     0x0000000000005ddf      0x38e /tmp/ccVgPSow.debug.temp.o
+                                        0x6dd (size before relaxing)
+ .debug_str     0x000000000000616d      0x21c /tmp/ccyULA62.debug.temp.o
+                                        0x57b (size before relaxing)
+ .debug_str     0x0000000000006389       0x71 /tmp/ccyGssJq.debug.temp.o
+                                        0x63d (size before relaxing)
+ .debug_str     0x00000000000063fa      0x37d /tmp/ccsokhlC.debug.temp.o
+                                        0x68e (size before relaxing)
+ .debug_str     0x0000000000006777      0x891 /tmp/ccjyPdZb.debug.temp.o
+                                        0xe79 (size before relaxing)
+ .debug_str     0x0000000000007008      0x2a1 /tmp/ccxsbJaX.debug.temp.o
+                                        0x6a8 (size before relaxing)
+ .debug_str     0x00000000000072a9       0x8e /tmp/ccfCkKvH.debug.temp.o
+                                        0x281 (size before relaxing)
+ .debug_str     0x0000000000007337       0x97 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+
+.debug_line_str
+                0x0000000000000000      0xb58
+ .debug_line_str
+                0x0000000000000000      0x14b /tmp/ccxKnriX.ltrans0.ltrans.o
+                                        0x331 (size before relaxing)
+ .debug_line_str
+                0x000000000000014b      0x179 /tmp/ccVfKdTK.debug.temp.o
+                                        0x269 (size before relaxing)
+ .debug_line_str
+                0x00000000000002c4       0x4d /tmp/ccE3j2qz.debug.temp.o
+                                        0x20c (size before relaxing)
+ .debug_line_str
+                0x0000000000000311       0xe4 /tmp/ccQtfyHZ.debug.temp.o
+                                        0x2c1 (size before relaxing)
+ .debug_line_str
+                0x00000000000003f5       0x33 /tmp/cczzyx9O.debug.temp.o
+                                        0x2b6 (size before relaxing)
+ .debug_line_str
+                0x0000000000000428      0x20a /tmp/ccjGNOux.debug.temp.o
+                                        0x3a0 (size before relaxing)
+ .debug_line_str
+                0x0000000000000632       0x39 /tmp/ccoXb9bq.debug.temp.o
+                                        0x260 (size before relaxing)
+ .debug_line_str
+                0x000000000000066b       0x20 /tmp/ccBcu17i.debug.temp.o
+                                        0x232 (size before relaxing)
+ .debug_line_str
+                0x000000000000068b       0x1c /tmp/ccu8egu5.debug.temp.o
+                                        0x2d0 (size before relaxing)
+ .debug_line_str
+                0x00000000000006a7        0xc /tmp/ccWt28tV.debug.temp.o
+                                        0x107 (size before relaxing)
+ .debug_line_str
+                0x00000000000006b3       0x26 /tmp/ccYiLXag.debug.temp.o
+                                        0x21c (size before relaxing)
+ .debug_line_str
+                0x00000000000006d9        0xe /tmp/ccHCLII5.debug.temp.o
+                                        0x105 (size before relaxing)
+ .debug_line_str
+                0x00000000000006e7       0x12 /tmp/cclEDQpU.debug.temp.o
+                                        0x174 (size before relaxing)
+ .debug_line_str
+                0x00000000000006f9       0x33 /tmp/ccuTC3o7.debug.temp.o
+                                        0x38f (size before relaxing)
+ .debug_line_str
+                0x000000000000072c       0x19 /tmp/ccbd847W.debug.temp.o
+                                        0x213 (size before relaxing)
+ .debug_line_str
+                0x0000000000000745        0xf /tmp/cc6aORr4.debug.temp.o
+                                        0x1ff (size before relaxing)
+ .debug_line_str
+                0x0000000000000754       0x62 /tmp/cc5xxDZO.debug.temp.o
+                                        0x27f (size before relaxing)
+ .debug_line_str
+                0x00000000000007b6       0x62 /tmp/ccUUsEyH.debug.temp.o
+                                        0x270 (size before relaxing)
+ .debug_line_str
+                0x0000000000000818       0x64 /tmp/ccVgPSow.debug.temp.o
+                                        0x276 (size before relaxing)
+ .debug_line_str
+                0x000000000000087c       0x63 /tmp/ccyULA62.debug.temp.o
+                                        0x282 (size before relaxing)
+ .debug_line_str
+                0x00000000000008df       0x63 /tmp/ccyGssJq.debug.temp.o
+                                        0x273 (size before relaxing)
+ .debug_line_str
+                0x0000000000000942       0x62 /tmp/ccsokhlC.debug.temp.o
+                                        0x270 (size before relaxing)
+ .debug_line_str
+                0x00000000000009a4       0x62 /tmp/ccjyPdZb.debug.temp.o
+                                        0x27f (size before relaxing)
+ .debug_line_str
+                0x0000000000000a06       0x64 /tmp/ccxsbJaX.debug.temp.o
+                                        0x285 (size before relaxing)
+ .debug_line_str
+                0x0000000000000a6a       0x63 /tmp/ccfCkKvH.debug.temp.o
+                                        0x272 (size before relaxing)
+ .debug_line_str
+                0x0000000000000acd       0x8b .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+                                         0xa1 (size before relaxing)
+
+.comment        0x0000000000000000       0x33
+ .comment       0x0000000000000000       0x34 /tmp/ccxKnriX.ltrans0.ltrans.o
+ .comment       0x0000000000000000       0x33 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-init.o)
+                                         0x34 (size before relaxing)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcmp.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_ctzsi2.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_udivdi3.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(adddf3.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divdf3.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(addsf3.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divsf3.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(eqsf2.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(gesf2.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(lesf2.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(mulsf3.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(subsf3.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixsfsi.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixunssfsi.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatsisf.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatunsisf.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatundisf.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(extendsfdf2.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(truncdfsf2.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clz.o)
+ .comment       0x0000000000000033       0x34 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clzsi2.o)
+
+.riscv.attributes
+                0x0000000000000000       0x3a
+ .riscv.attributes
+                0x0000000000000000       0x3a /tmp/ccxKnriX.ltrans0.ltrans.o
+ .riscv.attributes
+                0x000000000000003a       0x38 .pio/build/dm_ams_b_010/FrameworkNoneOSStartup/startup_ch32v20x_D6.o
+ .riscv.attributes
+                0x0000000000000072       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-init.o)
+ .riscv.attributes
+                0x00000000000000ac       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcmp.o)
+ .riscv.attributes
+                0x00000000000000e6       0x38 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memcpy-asm.o)
+ .riscv.attributes
+                0x000000000000011e       0x38 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/../../../../riscv-wch-elf/lib/rv32imac_xw/ilp32/libg_nano.a(lib_a-memset.o)
+ .riscv.attributes
+                0x0000000000000156       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_ctzsi2.o)
+ .riscv.attributes
+                0x0000000000000190       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_udivdi3.o)
+ .riscv.attributes
+                0x00000000000001ca       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(adddf3.o)
+ .riscv.attributes
+                0x0000000000000204       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divdf3.o)
+ .riscv.attributes
+                0x000000000000023e       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(addsf3.o)
+ .riscv.attributes
+                0x0000000000000278       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(divsf3.o)
+ .riscv.attributes
+                0x00000000000002b2       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(eqsf2.o)
+ .riscv.attributes
+                0x00000000000002ec       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(gesf2.o)
+ .riscv.attributes
+                0x0000000000000326       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(lesf2.o)
+ .riscv.attributes
+                0x0000000000000360       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(mulsf3.o)
+ .riscv.attributes
+                0x000000000000039a       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(subsf3.o)
+ .riscv.attributes
+                0x00000000000003d4       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixsfsi.o)
+ .riscv.attributes
+                0x000000000000040e       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(fixunssfsi.o)
+ .riscv.attributes
+                0x0000000000000448       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatsisf.o)
+ .riscv.attributes
+                0x0000000000000482       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatunsisf.o)
+ .riscv.attributes
+                0x00000000000004bc       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(floatundisf.o)
+ .riscv.attributes
+                0x00000000000004f6       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(extendsfdf2.o)
+ .riscv.attributes
+                0x0000000000000530       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(truncdfsf2.o)
+ .riscv.attributes
+                0x000000000000056a       0x38 /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(save-restore.o)
+ .riscv.attributes
+                0x00000000000005a2       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clz.o)
+ .riscv.attributes
+                0x00000000000005dc       0x3a /home/runner/.platformio/packages/toolchain-riscv/bin/../lib/gcc/riscv-wch-elf/12.2.0/rv32imac_xw/ilp32/libgcc.a(_clzsi2.o)
+
+.debug_frame    0x0000000000000000      0xac8
+ .debug_frame   0x0000000000000000      0xac8 /tmp/ccxKnriX.ltrans0.ltrans.o
