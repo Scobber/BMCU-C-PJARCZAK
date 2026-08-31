@@ -2141,13 +2141,16 @@ static float filament_pull_back_target[4] = {
     motion_control_pull_back_distance
 };
 
+// Named stop reasons for DM PRO commanded pullback.
+// DM_STOP_JAM is intentionally absent: there is no valid jam criterion during
+// commanded pullback (the old jam→0.100f fallback has been removed).  If a
+// genuine jam detector is added in future it should be inserted here.
 enum dm_pb_stop_reason_t : uint8_t
 {
-    DM_STOP_FRONT_SWITCH_CLEARED = 0,
-    DM_STOP_MAX_DISTANCE         = 1,
-    DM_STOP_TIMEOUT              = 2,
-    DM_STOP_ENCODER_FAULT        = 3,
-    DM_STOP_JAM                  = 4,
+    DM_STOP_FRONT_SWITCH_CLEARED = 0,  // normal success
+    DM_STOP_MAX_DISTANCE         = 1,  // safety: configured maximum retract reached
+    DM_STOP_TIMEOUT              = 2,  // safety: pullback timeout exceeded
+    DM_STOP_ENCODER_FAULT        = 3,  // safety: AS5600 encoder failed (anti-runaway)
 };
 
 static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
@@ -2212,33 +2215,51 @@ static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
                                                    stop_dist    ? DM_STOP_MAX_DISTANCE :
                                                    stop_timeout ? DM_STOP_TIMEOUT :
                                                                   DM_STOP_ENCODER_FAULT;
-                (void)reason;
                 (void)rear_now;
-                DEBUG_num("[PB_DM] ch",       (int)i);
-                DEBUG_num(" ks",              (int)ks);
-                DEBUG_num(" rear",            (int)rear_now);
-                DEBUG_num(" front",           (int)front_now);
-                DEBUG_num(" was_present",     (int)g_dm_pb_front_was_present[i]);
-                DEBUG_num(" d_mm",            (int)(d * 1000.0f));
-                DEBUG_num(" elapsed_ms",      (int)elapsed);
-                DEBUG_num(" stop_reason",     (int)reason);
+
+                // One-line termination log: ch ks front rear d_mm max_mm elapsed_ms reason
+                static const char * const reason_names[] = {
+                    "FRONT_SWITCH_CLEARED", "MAX_DISTANCE", "TIMEOUT", "ENCODER_FAULT"
+                };
+                DEBUG("[PB_STOP] ch=");  DEBUG_num("", (int)i);
+                DEBUG(" ks=");           DEBUG_num("", (int)ks);
+                DEBUG(" front=");        DEBUG_num("", (int)front_now);
+                DEBUG(" rear=");         DEBUG_num("", (int)rear_now);
+                DEBUG(" d_mm=");         DEBUG_num("", (int)(d * 1000.0f));
+                DEBUG(" max_mm=");       DEBUG_num("", (int)(filament_pull_back_target[i] * 1000.0f));
+                DEBUG(" elapsed_ms=");   DEBUG_num("", (int)elapsed);
+                DEBUG(" reason=");       DEBUG(reason_names[(int)reason]);
                 DEBUG("\r\n");
 
                 g_pull_remain_m[i]  = 0.0f;
                 g_pull_speed_set[i] = -PULL_V_FAST;
                 MOTOR_CONTROL[i].set_motion(filament_motion_enum::filament_motion_stop, 100, time_now);
                 filament_pull_back_target[i] = motion_control_pull_back_distance;
-                filament_now_position[i] = filament_redetect;
+
+                if (reason == DM_STOP_FRONT_SWITCH_CLEARED)
+                {
+                    // Confirmed successful unload: front switch cleared → go directly idle.
+                    // Do NOT enter filament_redetect which would drive the motor again.
+                    filament_now_position[i] = filament_idle;
+                    A.filament_use_flag = 0x00;
+                    A.filament[i].motion = _filament_motion::idle;
+                }
+                else
+                {
+                    // Safety / fault stop (MAX_DISTANCE, TIMEOUT, ENCODER_FAULT).
+                    // Enter filament_redetect to let the normal recovery path run.
+                    filament_now_position[i] = filament_redetect;
+                }
             }
             else
             {
-                DEBUG_num("[PB_DM] ch",       (int)i);
-                DEBUG_num(" ks",              (int)ks);
-                DEBUG_num(" rear",            (int)rear_now);
-                DEBUG_num(" front",           (int)front_now);
-                DEBUG_num(" d_mm",            (int)(d * 1000.0f));
-                DEBUG_num(" elapsed_ms",      (int)elapsed);
-                DEBUG_num(" reason",          front_now ? 2 /*RUNNING*/ : 1 /*FRONT_ABSENT_DEBOUNCING*/);
+                // Still retracting — emit periodic progress log.
+                DEBUG("[PB_RUN] ch=");  DEBUG_num("", (int)i);
+                DEBUG(" ks=");          DEBUG_num("", (int)ks);
+                DEBUG(" front=");       DEBUG_num("", (int)front_now);
+                DEBUG(" rear=");        DEBUG_num("", (int)rear_now);
+                DEBUG(" d_mm=");        DEBUG_num("", (int)(d * 1000.0f));
+                DEBUG(" status=");      DEBUG(front_now ? "RUNNING" : "FRONT_ABSENT_DEBOUNCING");
                 DEBUG("\r\n");
 
                 float k = g_pull_remain_m[i] / PULL_RAMP_M;
@@ -2255,6 +2276,8 @@ static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
 
         case filament_redetect:
         {
+            // Recovery path used after safety/fault pullback termination (MAX_DISTANCE,
+            // TIMEOUT, ENCODER_FAULT).  NOT entered after FRONT_SWITCH_CLEARED.
             MC_STU_RGB_set_latch(i, 0xFFu, 0xFFu, 0x00u, time_now, 0u);
 
             if (MC_ONLINE_key_stu[i] == 0)
@@ -2356,8 +2379,9 @@ static void motor_motion_switch(uint64_t time_now)
 
                 filament_pull_back_meters[num] = A.filament[num].meters;
 
-                // DM PRO: always front-switch-terminated; jam may abort with JAM fault
-                // but must not select an alternate fixed-distance unload mode.
+                // DM PRO: always front-switch-terminated.
+                // Normal completion = FRONT_SWITCH_CLEARED.
+                // Safety fallback = MAX_DISTANCE (= AMS_RETRACT_LEN for this build).
                 filament_pull_back_target[num]     = DM_PB_MAX_DIST_M;
                 g_dm_pb_front_was_present[num]     =
                     dm_front_switch_present(MC_ONLINE_key_stu[num]) ? 1u : 0u;
@@ -2368,14 +2392,14 @@ static void motor_motion_switch(uint64_t time_now)
 
                 g_pull_start_ms[num] = time_now;
 
-                DEBUG_num("[PB_START] ch",   (int)num);
-                DEBUG_num(" ams_num",        (int)BAMBU_BUS_AMS_NUM);
-                DEBUG_num(" max_mm",         (int)(DM_PB_MAX_DIST_M * 1000.0f));
-                DEBUG_num(" ks",             (int)MC_ONLINE_key_stu[num]);
-                DEBUG_num(" front",          (int)dm_front_switch_present(MC_ONLINE_key_stu[num]));
-                DEBUG_num(" rear",           (int)dm_rear_switch_present(MC_ONLINE_key_stu[num]));
-                DEBUG_num(" jam_latch",      (int)g_on_use_jam_latch[num]);
-                DEBUG_num(" as5600_ok",      (int)AS5600_is_good(num));
+                // Pullback-start log: selected max, initial switch states, AS5600 health.
+                DEBUG("[PB_START] ch=");  DEBUG_num("", (int)num);
+                DEBUG(" ams=");           DEBUG_num("", (int)BAMBU_BUS_AMS_NUM);
+                DEBUG(" max_mm=");        DEBUG_num("", (int)(DM_PB_MAX_DIST_M * 1000.0f));
+                DEBUG(" ks=");            DEBUG_num("", (int)MC_ONLINE_key_stu[num]);
+                DEBUG(" front=");         DEBUG_num("", (int)dm_front_switch_present(MC_ONLINE_key_stu[num]));
+                DEBUG(" rear=");          DEBUG_num("", (int)dm_rear_switch_present(MC_ONLINE_key_stu[num]));
+                DEBUG(" as5600_ok=");     DEBUG_num("", (int)AS5600_is_good(num));
                 DEBUG("\r\n");
 
                 MOTOR_CONTROL[num].set_motion(filament_motion_enum::filament_motion_pull, 100, time_now);
