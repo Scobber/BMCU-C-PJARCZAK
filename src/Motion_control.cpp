@@ -1445,6 +1445,16 @@ public:
         {
             x = -dir * 900.0f;
         }
+        // During commanded pullback the filament may leave the local BMCU
+        // filament sensor before the requested retract distance has been
+        // completed.  Continue retracting using AS5600 distance feedback so
+        // downstream PTFE junctions can be cleared.
+        else if (motion == filament_motion_enum::filament_motion_pull)
+        {
+            // speed_set is already negative (retract direction); use speed PID
+            speed_set = g_pull_speed_set[CHx];
+            x = dir * PID_speed.caculate(now_speed - speed_set, time_E);
+        }
         else if (MC_ONLINE_key_stu[CHx] != 0) // kanał aktywny i jest filament
         {
             if (motion == filament_motion_enum::filament_motion_before_pull_back)
@@ -1710,11 +1720,6 @@ public:
                             speed_set = V;
                         }
                     }
-                }
-
-                if (motion == filament_motion_enum::filament_motion_pull) // cofanie
-                {
-                    speed_set = g_pull_speed_set[CHx]; // dynamiczne (liniowo w końcówce)
                 }
 
                 if (do_speed_pid)
@@ -2152,19 +2157,20 @@ static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
             // been completed.  Continue retracting using AS5600 distance feedback so
             // downstream PTFE junctions can be cleared.
             const bool stop_target  = (target <= 0.0f || d >= target);  // STOP_REASON_TARGET_REACHED
-            const bool stop_encoder = !AS5600_is_good(i);               // STOP_REASON_ENCODER_FAULT
             const bool stop_timeout = ((time_now - g_pull_start_ms[i]) >= PULL_TIMEOUT_MS); // STOP_REASON_TIMEOUT
+            const bool stop_encoder = !AS5600_is_good(i);               // STOP_REASON_ENCODER_FAULT
 
-            if (stop_target || stop_encoder || stop_timeout)
+            if (stop_target || stop_timeout || stop_encoder)
             {
                 // stop_reason codes: 0=TARGET_REACHED  2=TIMEOUT  3=ENCODER_FAULT
-                // (reason 1=SENSOR_EMPTY is logged in the else branch when continuing)
+                // Priority: TARGET_REACHED > TIMEOUT > ENCODER_FAULT
+                // (reason 1=SENSOR_EMPTY: sensor cleared but continuing — logged in the else branch)
                 DEBUG_num("[PB] ch",      (int)i);
                 DEBUG_num(" tgt_mm",      (int)(target * 1000));
                 DEBUG_num(" d_mm",        (int)(d      * 1000));
                 DEBUG_num(" rem_mm",      (int)(remain * 1000));
                 DEBUG_num(" ks",          (int)MC_ONLINE_key_stu[i]);
-                DEBUG_num(" stop_reason", stop_target ? 0 : stop_encoder ? 3 : 2);
+                DEBUG_num(" stop_reason", stop_target ? 0 : stop_timeout ? 2 : 3);
                 DEBUG("\r\n");
 
                 g_pull_remain_m[i]  = 0.0f;
@@ -2175,16 +2181,15 @@ static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
             }
             else
             {
-                // STOP_REASON_SENSOR_EMPTY: sensor cleared but target not yet reached —
-                // log and continue. reason=1 in the log.
-                const uint8_t ks = MC_ONLINE_key_stu[i];
+                // Pullback in progress.  Log sensor state so we can distinguish:
+                //   reason 1 = SENSOR_EMPTY (filament left local sensor, continuing by distance)
+                //   reason 2 = RUNNING (sensor still active, normal travel)
                 DEBUG_num("[PB] ch",   (int)i);
                 DEBUG_num(" d_mm",     (int)(d      * 1000));
                 DEBUG_num(" rem_mm",   (int)(remain * 1000));
-                DEBUG_num(" ks",       (int)ks);
-                DEBUG_num(" reason",   ks == 0 ? 1 /*SENSOR_EMPTY,continuing*/ : -1 /*running*/);
+                DEBUG_num(" ks",       (int)MC_ONLINE_key_stu[i]);
+                DEBUG_num(" reason",   MC_ONLINE_key_stu[i] == 0 ? 1 /*SENSOR_EMPTY,continuing*/ : 2 /*RUNNING*/);
                 DEBUG("\r\n");
-                (void)ks; // referenced only in DEBUG_num; suppress unused-variable warning
 
                 g_pull_remain_m[i] = (remain > 0.0f) ? remain : 0.0f;
 
