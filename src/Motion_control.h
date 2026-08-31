@@ -28,9 +28,23 @@ extern bool    filament_channel_inserted[4];
 #define AMS_RETRACT_LEN 0.2f
 #endif
 
-// platformio.ini: -DBMCU_DM_TWO_MICROSWITCH=1 (DM dual microswitch + autoload assist)
-#ifndef BMCU_DM_TWO_MICROSWITCH
-#define BMCU_DM_TWO_MICROSWITCH 0
+// DM PRO maximum retract distance: one source of truth.
+// This is the safety/fallback limit; normal unload stops at front-switch clear.
+#define DM_PRO_MAX_RETRACT_M AMS_RETRACT_LEN
+
+// DM PRO dual-microswitch hardware is the only supported hardware in this fork.
+#define BMCU_DM_TWO_MICROSWITCH 1
+
+// BMCU_DM_SOLO=1: standalone DM PRO feeder (BAMBU_BUS_AMS_NUM=0, no AMS chain).
+// Protocol is identical to AMS A; this flag is reserved for future differentiation.
+#ifndef BMCU_DM_SOLO
+#define BMCU_DM_SOLO 0
+#endif
+
+// BMCU_DM_LITE=1: DM PRO lite variant (BAMBU_BUS_AMS_NUM=0).
+// No distinct source implementation exists; this flag is reserved for future differentiation.
+#ifndef BMCU_DM_LITE
+#define BMCU_DM_LITE 0
 #endif
 
 // platformio.ini: -DBMCU_ONLINE_LED_FILAMENT_RGB=1 (show filament RGB on ONLINE LED when loaded)
@@ -43,7 +57,9 @@ extern bool    filament_channel_inserted[4];
 #endif
 
 #ifndef motion_control_pull_back_distance
-#define motion_control_pull_back_distance AMS_RETRACT_LEN
+// DM PRO pullback: DM_PRO_MAX_RETRACT_M is the maximum allowed retract distance.
+// Normal unload completion is front-switch-cleared; this is only the safety fallback.
+#define motion_control_pull_back_distance DM_PRO_MAX_RETRACT_M
 #endif
 
 #if (BAMBU_BUS_AMS_NUM < 0) || (BAMBU_BUS_AMS_NUM > 3)

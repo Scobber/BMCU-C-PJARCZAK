@@ -1,0 +1,5 @@
+.pio/
+*.o
+*.elf
+*.map
+*.lst

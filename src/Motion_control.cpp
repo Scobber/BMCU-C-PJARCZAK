@@ -164,18 +164,16 @@ static constexpr float PULL_PWM_MIN  = 400.0f;  // "kop" przy pullback
 static float g_pull_remain_m[4]  = {0,0,0,0};
 static float g_pull_speed_set[4] = {-PULL_V_FAST,-PULL_V_FAST,-PULL_V_FAST,-PULL_V_FAST}; // mm/s (ujemne)
 
-// Maximum time allowed for a single commanded pullback cycle (ms).
-// Computed for worst-case AMS_RETRACT_LEN=0.90 m at minimum exit speed PULL_V_END=12 mm/s
-// → 900/12 = 75 s; 90 000 ms leaves a generous margin.
-static constexpr uint64_t PULL_TIMEOUT_MS = 90000ULL;
-
 // Timestamp (ms) at which the current pullback was started, per channel.
 static uint64_t g_pull_start_ms[4] = {0ULL, 0ULL, 0ULL, 0ULL};
 
-#if BMCU_DM_TWO_MICROSWITCH
 // DM PRO: front-switch-terminated pullback constants and tracking state.
-static constexpr float    DM_PB_MAX_DIST_M  = 0.300f;    // 300 mm safety max distance
-static constexpr uint64_t DM_PB_TIMEOUT_MS  = 10000ULL;  // 10 s timeout
+// DM_PB_MAX_DIST_M: maximum allowed retract during commanded pullback (= AMS_RETRACT_LEN).
+// Normal completion is front-switch-cleared; this is the safety/fallback limit.
+static constexpr float    DM_PB_MAX_DIST_M  = DM_PRO_MAX_RETRACT_M;
+// Timeout: worst case AMS_RETRACT_LEN=0.90 m at minimum speed PULL_V_END=12 mm/s → 75 s.
+// 90 000 ms gives a generous margin for all build lengths.
+static constexpr uint64_t DM_PB_TIMEOUT_MS  = 90000ULL;
 static constexpr uint64_t DM_PB_DEBOUNCE_MS = 50ULL;     // 50 ms front-switch absent debounce
 
 // Edge-detection flag: set to 1 when the front switch is seen present at any point
@@ -183,14 +181,9 @@ static constexpr uint64_t DM_PB_DEBOUNCE_MS = 50ULL;     // 50 ms front-switch a
 // not on a false-absent reading at pullback start.
 static uint8_t  g_dm_pb_front_was_present[4] = {0, 0, 0, 0};
 
-// Set to 1 when front-switch-terminated pullback is active for this channel.
-// Set to 0 for jam-override pullbacks (which use fixed 100 mm distance instead).
-static uint8_t  g_dm_pb_use_front_switch[4]  = {0, 0, 0, 0};
-
 // Time (ms) at which the front switch was first seen absent during the current pullback.
 // 0 = front switch has not gone absent yet (or was just reset).
 static uint64_t g_dm_pb_front_absent_ms[4]   = {0ULL, 0ULL, 0ULL, 0ULL};
-#endif
 
 float MC_PULL_V_OFFSET[4]      = {0.0f, 0.0f, 0.0f, 0.0f};
 float MC_PULL_V_MIN[4]         = {1.00f, 1.00f, 1.00f, 1.00f};
@@ -219,7 +212,6 @@ static inline __attribute__((always_inline)) void MC_STU_RGB_set_latch(uint8_t c
         MC_STU_RGB_set(ch, r, g, b);
 }
 
-#if BMCU_DM_TWO_MICROSWITCH
 // DM PRO dual-microswitch voltage encoding:
 //   0 : neither switch  (v < none_thr, ~0.6 V)
 //   1 : both switches   (v > 1.7 V)       — filament fully loaded
@@ -285,7 +277,6 @@ static float    dm_auto_remain_m[4]     = {0,0,0,0};
 static float    dm_auto_last_m[4]       = {0,0,0,0};
 
 static uint64_t dm_loaded_drop_t0_ms[4] = {0ull,0ull,0ull,0ull};
-#endif
 
 static constexpr float    AUTO_UNLOAD_START_PCT      = 80.0f;
 static constexpr float    AUTO_UNLOAD_NEUTRAL_LO_PCT = 45.0f;
@@ -502,8 +493,7 @@ static inline void MC_PULL_ONLINE_read(uint32_t now_ticks)
     MC_PULL_stu_raw[0] = pull_v_apply_polarity(0u, data[6] + MC_PULL_V_OFFSET[0]);
     const float key0   = data[7];
 
-#if BMCU_DM_TWO_MICROSWITCH
-    const float keyv[4] = { key0, key1, key2, key3 };
+const float keyv[4] = { key0, key1, key2, key3 };
 
     // --- Buffer Gesture Load  ---
     static uint32_t gst_t0_ticks[4]     = {0,0,0,0};
@@ -581,13 +571,6 @@ static inline void MC_PULL_ONLINE_read(uint32_t now_ticks)
         MC_ONLINE_key_stu[i] = state;
     }
     // --- End Buffer Gesture Load  ---
-#else
-    // online key: tylko jeśli kanał fizycznie wpięty
-    MC_ONLINE_key_stu[3] = (filament_channel_inserted[3] && (key3 > 1.7f)) ? 1u : 0u;
-    MC_ONLINE_key_stu[2] = (filament_channel_inserted[2] && (key2 > 1.7f)) ? 1u : 0u;
-    MC_ONLINE_key_stu[1] = (filament_channel_inserted[1] && (key1 > 1.7f)) ? 1u : 0u;
-    MC_ONLINE_key_stu[0] = (filament_channel_inserted[0] && (key0 > 1.7f)) ? 1u : 0u;
-#endif
 
 
     for (uint8_t i = 0; i < kChCount; i++)
@@ -1085,10 +1068,8 @@ public:
         float speed_set = 0.0f;
         const float now_speed = speed_as5600[CHx];
         float x = 0.0f;
-#if BMCU_DM_TWO_MICROSWITCH
         bool  dm_autoload_active = false;
         float dm_autoload_x      = 0.0f;
-#endif
 
         // info o ostatnim wyjściu z on_use
         const uint64_t t_exit  = g_last_on_use_exit_ms[CHx];
@@ -1119,7 +1100,6 @@ public:
 
         if (motion == filament_motion_enum::filament_motion_pressure_ctrl_idle)
         {
-        #if BMCU_DM_TWO_MICROSWITCH
                     // --- DM autoload (Stage1 + Stage2) ---
                     if (filament_channel_inserted[CHx] && (dm_loaded[CHx] == 0u))
                     {
@@ -1405,7 +1385,6 @@ public:
                         PID_speed.clear();
                     }
                     else
-        #endif
 
             if (MC_ONLINE_key_stu[CHx] == 0)
             {
@@ -1821,15 +1800,9 @@ public:
         // clamp
         if (motion == filament_motion_enum::filament_motion_pressure_ctrl_idle)
         {
-        #if BMCU_DM_TWO_MICROSWITCH
             const float lim = dm_autoload_active ? DM_AUTO_IDLE_LIM : 800.0f;
             if (x >  lim) x =  lim;
             if (x < -lim) x = -lim;
-        #else
-            constexpr float PWM_IDLE_LIM = 800.0f;
-            if (x >  PWM_IDLE_LIM) x =  PWM_IDLE_LIM;
-            if (x < -PWM_IDLE_LIM) x = -PWM_IDLE_LIM;
-        #endif
         }
         else
         {
@@ -2168,10 +2141,14 @@ static float filament_pull_back_target[4] = {
     motion_control_pull_back_distance
 };
 
-// BEFORE_PULLBACK: zapis realnie "wycofanej" drogi (m) (sumowanie całego wycofania)
-static float  before_pb_last_m[4]      = {0,0,0,0};
-static float  before_pb_retracted_m[4] = {0,0,0,0};
-static int8_t before_pb_sign[4]        = {0,0,0,0};
+enum dm_pb_stop_reason_t : uint8_t
+{
+    DM_STOP_FRONT_SWITCH_CLEARED = 0,
+    DM_STOP_MAX_DISTANCE         = 1,
+    DM_STOP_TIMEOUT              = 2,
+    DM_STOP_ENCODER_FAULT        = 3,
+    DM_STOP_JAM                  = 4,
+};
 
 static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
 {
@@ -2190,30 +2167,27 @@ static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
             const float   d       = absf(A.filament[i].meters - filament_pull_back_meters[i]);
             const uint64_t elapsed = time_now - g_pull_start_ms[i];
 
-#if BMCU_DM_TWO_MICROSWITCH
             // DM PRO: front/output-switch-terminated pullback.
             //
             // During commanded pullback the filament may leave the rear (spool-side)
-            // switch well before the front (output-side) switch clears.  Do NOT stop
+            // switch well before the front (output-side) switch clears. Do NOT stop
             // on rear-switch changes — only stop when the front/output switch
             // transitions from present → absent (debounced).
-            // Fixed-distance / DAMS_RETRACT_LEN is NOT the normal stop condition here.
+            // Fixed-distance / AMS_RETRACT_LEN is NOT the normal stop condition here.
             // See dm_front_switch_present() / dm_rear_switch_present() for state mapping.
 
             const bool front_now = dm_front_switch_present(ks);
             const bool rear_now  = dm_rear_switch_present(ks);
 
-            // Edge detection: latch once front switch is first seen active this pullback
             if (front_now) g_dm_pb_front_was_present[i] = 1u;
 
-            // Debounce: record timestamp when front switch first goes absent
             if (front_now)
             {
-                g_dm_pb_front_absent_ms[i] = 0ULL;   // still present — reset timer
+                g_dm_pb_front_absent_ms[i] = 0ULL;
             }
             else if (g_dm_pb_front_absent_ms[i] == 0ULL && time_now != 0ULL)
             {
-                g_dm_pb_front_absent_ms[i] = time_now;  // first cycle absent
+                g_dm_pb_front_absent_ms[i] = time_now;
             }
 
             const bool front_debounced_absent =
@@ -2221,17 +2195,12 @@ static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
                 (g_dm_pb_front_absent_ms[i] != 0ULL) &&
                 ((time_now - g_dm_pb_front_absent_ms[i]) >= DM_PB_DEBOUNCE_MS);
 
-            // Normal stop: front switch present→absent edge (debounced)
-            // Only active when g_dm_pb_use_front_switch is set (i.e., not jam-override).
-            const bool stop_front   = (g_dm_pb_use_front_switch[i] != 0u) &&
-                                      (g_dm_pb_front_was_present[i] != 0u) &&
+            const bool stop_front   = (g_dm_pb_front_was_present[i] != 0u) &&
                                       front_debounced_absent;
-            // Safety / fault stops
-            const bool stop_dist    = (d >= filament_pull_back_target[i]);  // MAX_DISTANCE (or jam 100mm)
-            const bool stop_timeout = (elapsed >= DM_PB_TIMEOUT_MS);        // TIMEOUT
-            const bool stop_encoder = !AS5600_is_good(i);                   // ENCODER_FAULT
+            const bool stop_dist    = (d >= filament_pull_back_target[i]);
+            const bool stop_timeout = (elapsed >= DM_PB_TIMEOUT_MS);
+            const bool stop_encoder = !AS5600_is_good(i);
 
-            // Keep ramp proportional to remaining safety distance
             {
                 const float rem = filament_pull_back_target[i] - d;
                 g_pull_remain_m[i] = (rem > 0.0f) ? rem : 0.0f;
@@ -2239,9 +2208,11 @@ static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
 
             if (stop_front || stop_dist || stop_timeout || stop_encoder)
             {
-                // 0=FRONT_SWITCH_CLEARED  1=MAX_DISTANCE  2=TIMEOUT  3=ENCODER_FAULT
-                const int reason = stop_front ? 0 : stop_dist ? 1 : stop_timeout ? 2 : 3;
-                (void)reason;   // suppress unused-variable warning when debug logging is disabled
+                const dm_pb_stop_reason_t reason = stop_front   ? DM_STOP_FRONT_SWITCH_CLEARED :
+                                                   stop_dist    ? DM_STOP_MAX_DISTANCE :
+                                                   stop_timeout ? DM_STOP_TIMEOUT :
+                                                                  DM_STOP_ENCODER_FAULT;
+                (void)reason;
                 (void)rear_now;
                 DEBUG_num("[PB_DM] ch",       (int)i);
                 DEBUG_num(" ks",              (int)ks);
@@ -2250,7 +2221,7 @@ static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
                 DEBUG_num(" was_present",     (int)g_dm_pb_front_was_present[i]);
                 DEBUG_num(" d_mm",            (int)(d * 1000.0f));
                 DEBUG_num(" elapsed_ms",      (int)elapsed);
-                DEBUG_num(" stop_reason",     reason);
+                DEBUG_num(" stop_reason",     (int)reason);
                 DEBUG("\r\n");
 
                 g_pull_remain_m[i]  = 0.0f;
@@ -2261,7 +2232,6 @@ static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
             }
             else
             {
-                // 1=FRONT_ABSENT_DEBOUNCING  2=RUNNING
                 DEBUG_num("[PB_DM] ch",       (int)i);
                 DEBUG_num(" ks",              (int)ks);
                 DEBUG_num(" rear",            (int)rear_now);
@@ -2278,58 +2248,6 @@ static bool motor_motion_filamnet_pull_back_to_online_key(uint64_t time_now)
 
                 MOTOR_CONTROL[i].set_motion(filament_motion_enum::filament_motion_pull, 100, time_now);
             }
-
-#else   // non-DM hardware: fixed-distance pullback (unchanged behaviour)
-
-            const float target = filament_pull_back_target[i];
-            const float remain = target - d;
-
-            // STOP_REASON_SENSOR_EMPTY (MC_ONLINE_key_stu==0) is intentionally NOT a
-            // stop condition here.  During commanded pullback the filament may leave the
-            // local BMCU sensor before the requested retract distance has been completed.
-            // Continue retracting using AS5600 distance feedback so downstream PTFE
-            // junctions can be cleared.
-            const bool stop_target  = (target <= 0.0f || d >= target);
-            const bool stop_timeout = (elapsed >= PULL_TIMEOUT_MS);
-            const bool stop_encoder = !AS5600_is_good(i);
-
-            if (stop_target || stop_timeout || stop_encoder)
-            {
-                // 0=TARGET_REACHED  2=TIMEOUT  3=ENCODER_FAULT
-                DEBUG_num("[PB] ch",      (int)i);
-                DEBUG_num(" tgt_mm",      (int)(target * 1000.0f));
-                DEBUG_num(" d_mm",        (int)(d      * 1000.0f));
-                DEBUG_num(" rem_mm",      (int)(remain * 1000.0f));
-                DEBUG_num(" ks",          (int)ks);
-                DEBUG_num(" stop_reason", stop_target ? 0 : stop_timeout ? 2 : 3);
-                DEBUG("\r\n");
-
-                g_pull_remain_m[i]  = 0.0f;
-                g_pull_speed_set[i] = -PULL_V_FAST;
-                MOTOR_CONTROL[i].set_motion(filament_motion_enum::filament_motion_stop, 100, time_now);
-                filament_pull_back_target[i] = motion_control_pull_back_distance;
-                filament_now_position[i] = filament_redetect;
-            }
-            else
-            {
-                // 1=SENSOR_EMPTY(continuing by distance)  2=RUNNING
-                DEBUG_num("[PB] ch",   (int)i);
-                DEBUG_num(" d_mm",     (int)(d      * 1000.0f));
-                DEBUG_num(" rem_mm",   (int)(remain * 1000.0f));
-                DEBUG_num(" ks",       (int)ks);
-                DEBUG_num(" reason",   ks == 0 ? 1 : 2);
-                DEBUG("\r\n");
-
-                g_pull_remain_m[i] = (remain > 0.0f) ? remain : 0.0f;
-
-                float k = g_pull_remain_m[i] / PULL_RAMP_M;
-                k = clampf(k, 0.0f, 1.0f);
-                const float v = PULL_V_END + (PULL_V_FAST - PULL_V_END) * k;
-                g_pull_speed_set[i] = -v;
-
-                MOTOR_CONTROL[i].set_motion(filament_motion_enum::filament_motion_pull, 100, time_now);
-            }
-#endif
 
             wait = true;
             break;
@@ -2438,52 +2356,27 @@ static void motor_motion_switch(uint64_t time_now)
 
                 filament_pull_back_meters[num] = A.filament[num].meters;
 
-#if BMCU_DM_TWO_MICROSWITCH
-                // DM PRO: front-switch-terminated pullback.
-                // For a jam override, fall back to fixed 100 mm distance for predictability.
-                // For normal unload, use the safety-distance limit (front switch is the normal stop).
-                if (g_on_use_jam_latch[num])
-                {
-                    filament_pull_back_target[num]     = 0.100f;
-                    g_dm_pb_use_front_switch[num]      = 0u;  // jam: disable front-switch stop
-                    g_dm_pb_front_was_present[num]     = 0u;
-                }
-                else
-                {
-                    filament_pull_back_target[num]     = DM_PB_MAX_DIST_M;
-                    g_dm_pb_use_front_switch[num]      = 1u;  // normal unload: front-switch terminated
-                    // Edge-detection seed: record whether front switch is already present
-                    g_dm_pb_front_was_present[num]     =
-                        dm_front_switch_present(MC_ONLINE_key_stu[num]) ? 1u : 0u;
-                }
-                g_dm_pb_front_absent_ms[num] = 0ULL;
-#else
-                {
-                    float target;
-                    if (g_on_use_jam_latch[num])
-                    {
-                        target = 0.100f;
-                    }
-                    else
-                    {
-                        const float already = before_pb_retracted_m[num];
-                        target = motion_control_pull_back_distance - already;
-
-                        if (target < 0.0f) target = 0.0f;
-                        if (target > motion_control_pull_back_distance) target = motion_control_pull_back_distance;
-                    }
-                    filament_pull_back_target[num] = target;
-                }
-#endif
+                // DM PRO: always front-switch-terminated; jam may abort with JAM fault
+                // but must not select an alternate fixed-distance unload mode.
+                filament_pull_back_target[num]     = DM_PB_MAX_DIST_M;
+                g_dm_pb_front_was_present[num]     =
+                    dm_front_switch_present(MC_ONLINE_key_stu[num]) ? 1u : 0u;
+                g_dm_pb_front_absent_ms[num]       = 0ULL;
 
                 g_pull_remain_m[num]  = filament_pull_back_target[num];
                 g_pull_speed_set[num] = -PULL_V_FAST;
 
-                before_pb_retracted_m[num] = 0.0f;
-                before_pb_sign[num]        = 0;
-                before_pb_last_m[num]      = filament_pull_back_meters[num];
-
                 g_pull_start_ms[num] = time_now;
+
+                DEBUG_num("[PB_START] ch",   (int)num);
+                DEBUG_num(" ams_num",        (int)BAMBU_BUS_AMS_NUM);
+                DEBUG_num(" max_mm",         (int)(DM_PB_MAX_DIST_M * 1000.0f));
+                DEBUG_num(" ks",             (int)MC_ONLINE_key_stu[num]);
+                DEBUG_num(" front",          (int)dm_front_switch_present(MC_ONLINE_key_stu[num]));
+                DEBUG_num(" rear",           (int)dm_rear_switch_present(MC_ONLINE_key_stu[num]));
+                DEBUG_num(" jam_latch",      (int)g_on_use_jam_latch[num]);
+                DEBUG_num(" as5600_ok",      (int)AS5600_is_good(num));
+                DEBUG("\r\n");
 
                 MOTOR_CONTROL[num].set_motion(filament_motion_enum::filament_motion_pull, 100, time_now);
                 break;
@@ -2492,39 +2385,7 @@ static void motor_motion_switch(uint64_t time_now)
             case _filament_motion::before_pull_back:
             {
                 MC_STU_RGB_set_latch(num, 0xFFu, 0xA0u, 0x00u, time_now, 1u);
-
-                if (filament_now_position[num] != filament_before_pull_back)
-                {
-                    filament_now_position[num] = filament_before_pull_back;
-                    before_pb_last_m[num]      = A.filament[num].meters;
-                    before_pb_retracted_m[num] = 0.0f;
-                    before_pb_sign[num]        = 0;
-                }
-
-                {
-                    const float m  = A.filament[num].meters;
-                    const float dm = m - before_pb_last_m[num];
-                    before_pb_last_m[num] = m;
-
-                    const float pct = MC_PULL_pct_f[num];
-                    const bool want_retract = (pct > 50.25f);
-
-                    if (want_retract)
-                    {
-                        if (before_pb_sign[num] == 0 && absf(dm) > 0.0005f)
-                            before_pb_sign[num] = (dm >= 0.0f) ? 1 : -1;
-
-                        if (before_pb_sign[num] > 0) {
-                            if (dm > 0.0f) before_pb_retracted_m[num] += dm;
-                        } else if (before_pb_sign[num] < 0) {
-                            if (dm < 0.0f) before_pb_retracted_m[num] += -dm;
-                        }
-                    }
-
-                    if (before_pb_retracted_m[num] < 0.0f) before_pb_retracted_m[num] = 0.0f;
-                    if (before_pb_retracted_m[num] > 2.0f) before_pb_retracted_m[num] = 2.0f;
-                }
-
+                filament_now_position[num] = filament_before_pull_back;
                 MOTOR_CONTROL[num].set_motion(filament_motion_enum::filament_motion_before_pull_back, 300, time_now);
                 break;
             }
@@ -2551,13 +2412,9 @@ static void motor_motion_switch(uint64_t time_now)
 
                 MOTOR_CONTROL[num].set_motion(filament_motion_enum::filament_motion_pressure_ctrl_idle, 100, time_now);
 
-#if BMCU_DM_TWO_MICROSWITCH
                 if (dm_fail_latch[num])      MC_STU_RGB_set_latch(num, 0xFFu, 0x00u, 0x00u, time_now, 0u);
                 else if (dm_loaded[num])     MC_STU_RGB_set_latch(num, 0x38u, 0x35u, 0x32u, time_now, 0u);
                 else                         MC_STU_RGB_set_latch(num, 0x00u, 0x00u, 0x00u, time_now, 0u);
-#else
-                MC_STU_RGB_set_latch(num, 0x38u, 0x35u, 0x32u, time_now, 0u);
-#endif
                 break;
             }
             }
@@ -2581,7 +2438,6 @@ static inline void stu_apply_baseline(int error, uint64_t now_ms)
             continue;
         }
 
-#if BMCU_DM_TWO_MICROSWITCH
         if (dm_fail_latch[i])
         {
             MC_STU_RGB_set(i, 0xFFu, 0x00u, 0x00u);
@@ -2596,27 +2452,12 @@ static inline void stu_apply_baseline(int error, uint64_t now_ms)
 
         if (show_loaded) MC_STU_RGB_set_latch(i, 0x38u, 0x35u, 0x32u, now_ms, 0u);
         else             MC_STU_RGB_set_latch(i, 0x00u, 0x00u, 0x00u, now_ms, 0u);
-#else
-        if (error)
-        {
-            if (MC_ONLINE_key_stu[i] != 0) MC_STU_RGB_set_latch(i, 0x38u, 0x35u, 0x32u, now_ms, 0u);
-            else                           MC_STU_RGB_set_latch(i, 0x00u, 0x00u, 0x00u, now_ms, 0u);
-        }
-        else
-        {
-            if (MC_ONLINE_key_stu[i] != 0 && filament_channel_inserted[i])
-                MC_STU_RGB_set_latch(i, 0x38u, 0x35u, 0x32u, now_ms, 0u);
-            else
-                MC_STU_RGB_set_latch(i, 0x00u, 0x00u, 0x00u, now_ms, 0u);
-        }
-#endif
     }
 }
 
 
 static void motor_motion_run(int error, uint64_t time_now, uint32_t now_ticks)
 {
-#if BMCU_DM_TWO_MICROSWITCH
     for (uint8_t ch = 0; ch < kChCount; ch++)
     {
         if (!filament_channel_inserted[ch])
@@ -2672,7 +2513,6 @@ static void motor_motion_run(int error, uint64_t time_now, uint32_t now_ticks)
             dm_loaded_drop_t0_ms[ch] = 0ull;
         }
     }
-#endif
 
     static uint32_t last_ticks = 0u;
     static uint8_t  have_last_ticks = 0u;
@@ -2890,11 +2730,7 @@ static void motor_motion_run(int error, uint64_t time_now, uint32_t now_ticks)
             const uint8_t key = MC_ONLINE_key_stu[i];
 
 #if BMCU_ONLINE_LED_FILAMENT_RGB
-    #if BMCU_DM_TWO_MICROSWITCH
             const bool show_filament_rgb = (key == 1u) && dm_loaded[i] && !dm_fail_latch[i];
-    #else
-            const bool show_filament_rgb = (key != 0u);
-    #endif
             if (show_filament_rgb)
             {
                 r = Acol.filament[i].color_R;
@@ -3258,8 +3094,7 @@ void Motion_control_init()
     MC_PULL_ONLINE_init();
     MC_PULL_ONLINE_read(time_ticks32());
 
-    #if BMCU_DM_TWO_MICROSWITCH
-        for (uint8_t ch = 0; ch < kChCount; ch++)
+    for (uint8_t ch = 0; ch < kChCount; ch++)
         {
             if (!filament_channel_inserted[ch])
             {
@@ -3288,7 +3123,6 @@ void Motion_control_init()
             dm_auto_last_m[ch]       = 0.0f;
             dm_loaded_drop_t0_ms[ch] = 0ull;
         }
-    #endif
 
     MC_AS5600.init(AS5600_SCL_PORT, AS5600_SCL_PIN,
                AS5600_SDA_PORT, AS5600_SDA_PIN,
