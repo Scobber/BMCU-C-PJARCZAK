@@ -1,464 +1,525 @@
-# BMCU Firmware – Calibration and Compatibility Notes
+# BMCU 370C DM PRO Firmware for Bambu Lab A1
 
-This BMCU firmware has been tested and verified with the latest Bambu Lab A1 firmware.
+This repository is a focused firmware fork for the **BMCU 370C DM PRO dual-microswitch hardware** used with the **Bambu Lab A1**.
 
-> [!WARNING]
-> Bambu Lab is limiting local BMCU interoperability through firmware updates.
->
-> About how printer updates remove functions that were available at purchase:
-> [BMCU vs firmware locks](./bmcu-vs-firmware-locks.md)
+It keeps the original BMCU hardware and firmware foundation, but the current codebase has been substantially simplified and extended around the DM PRO hardware, A1 operation, dual-microswitch filament handling, AS5600 feedback, deterministic unloading, and a more complete Bambu AMS bus identity/registration layer.
 
+## Attribution
 
-IMPORTANT:
-The printer must be configured as AMS, not AMS Lite.
-Using AMS Lite will cause incompatibility issues.
+This project is based on the original **BMCU-C-PJARCZAK** work by **Paweł Jarczak / `jarczakpawel`**.
 
+Original upstream repository:
 
-<h1 align="center">Support</h1>
+https://github.com/jarczakpawel/BMCU-C-PJARCZAK
 
-<p align="center">
-  Bambu Lab continues tightening compatibility around BMCU, and there is a growing risk that BMCU may eventually become unusable in that ecosystem.
-</p>
+The original project provided the BMCU hardware support, bus implementation, motion-control foundation, calibration, filament state handling, persistence, and the community work that made BMCU possible. The work in this fork builds on that foundation rather than replacing or claiming authorship of it.
 
-<p align="center">
-  To prepare for that, I want to build BMCU support for open-source Klipper-based printers.
-</p>
-
-<p align="center">
-  I am currently raising funds to buy a test printer for this work.
-</p>
-
-<p align="center">
-  The $500 goal does not need to be reached in full. If I manage to save the remaining amount myself, I will cover the rest out of my own pocket.
-</p>
-
-<p align="center">
-  <a href="https://ko-fi.com/jarczakpawel/goal?g=0">
-    <img src="./banner-klipper.png" alt="Want BMCU on Klipper? Click the links below to support development." width="460">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://ko-fi.com/jarczakpawel/goal?g=0"><strong>Support on Ko-fi</strong></a>
-  ·
-  <a href="https://revolut.me/paweqxdkx"><strong>Support via Revolut</strong></a>
-</p>
-
-<p align="center">
-  Direct Revolut support avoids Ko-fi fees, so more of your contribution goes directly to the project.
-</p>
-
-
-# ❗ IMPORTANT - FIRST START (V10.3+) ❗
-
-At the first startup after flashing, **all channels must be empty**.
-
-From **V10.3**, the firmware calibrates empty-channel detection during first boot.
-
-If you flashed it with filament inserted:
-- remove all filament
-- hold any one buffer for about **5 seconds** to re-calibrate
-
-# ❗ Warning for 2nd generation printers
-A lot of people make a mistake because the drawings are misleading, and it is not always clear from the diagrams whether they show the plug or the socket. As a result, Signal A and Signal B often get connected the wrong way around.
-
-If your BMCU is not detected by a 2nd generation printer, try swapping Signal A and Signal B - but make sure you know exactly what you are doing.
-
-
-# HMS WARNING STATUS
-
-This firmware version **triggers an HMS warning immediately after printer startup**.
-
-Important clarification:
-- This HMS warning **does NOT block BMCU operation**
-- It does **NOT require restarting the printer**
-- It does **NOT affect printing**
-- The printer works normally despite the warning
-- The issue is **purely visual / informational** (HMS icon only)
-
-At the moment, the HMS warning is known and accepted behavior in this firmware version.
-
-If the HMS warning in Bambu Studio annoys you:
-I made a Bambu Studio build that bypasses this specific AMS compatibility warning, so you do not see it anymore.
-Other HMS warnings will still be visible (if they happen), so HMS remains useful.
-
-https://github.com/jarczakpawel/BambuStudio-BMCU
+If you are looking for the broader upstream BMCU project, other printer families, other PCB variants, or the original general-purpose firmware documentation, use the upstream repository above.
 
 ---
 
-## Supported printers
+## Scope of this fork
 
-Correct operation has been confirmed on both 1st generation and 2nd generation printers.
+This repository targets:
 
-### 1st generation printers
-Support is confirmed for 1st generation printers.
+- **BMCU 370C DM PRO**
+- **dual filament microswitches**
+- **AS5600 magnetic encoder / buffer sensing**
+- **Bambu Lab A1**
+- Bambu AMS-style bus communication
 
-### 2nd generation printers
-Correct operation has been confirmed on:
-- Bambu Lab P2S
-- Bambu Lab H2D
-
-At this point, it looks like it should work on all printers from both generations.
+This is intentionally not the general-purpose upstream firmware matrix. Legacy instructions for single-switch boards, alternate loading modes, unrelated printer families, old firmware generations, and obsolete flashing/build combinations have been removed from this README.
 
 ---
 
-## Download
+## Main features
 
-Please download ready-to-use firmware from the **"Releases"** section (right side of the GitHub page).
-All firmware variants are generated there together with **.txt guides** that explain which build you should choose.
+### DM PRO dual-microswitch operation
 
-Start by selecting the correct printer mode folder first (standard(A1) or high_force_load(P1S)), then choose AUTOLOAD / RGB / slots as usual.
+The firmware treats the two physical filament switches separately.
 
-## Flashing
+- **Rear / spool-side microswitch**
+  - used as the automatic filament-load trigger
+- **Front / output / toolhead-side microswitch**
+  - used as the normal unload completion sensor
 
-To flash any version of the BMCU (USB or TTL) on:
+The current decoded switch states are:
 
-- Windows
-- Linux
-- macOS
-- Android
+| State | Meaning |
+|---:|---|
+| `0` | neither switch active |
+| `1` | both switches active |
+| `2` | rear / spool-side switch only |
+| `3` | front / output-side switch only |
 
-use **BMCU Flasher**:
+This distinction is important. The rear switch is not used as the normal unload endpoint.
 
-https://github.com/jarczakpawel/BMCU-Flasher
+### Automatic filament loading
 
-Precompiled binaries are available in the **Releases** section.
+Normal DM PRO loading is:
 
-The flashing process is very simple and **does not require wchisptool**.
+```text
+insert filament from spool side
+        ↓
+rear microswitch activates
+        ↓
+automatic feed starts
+        ↓
+filament reaches the front/output side
+        ↓
+loading completes
+```
 
-You can flash firmware in two ways:
+The existing buffer, pressure-control, AS5600, and anti-snag logic remains part of the loading system.
 
-- **Online flashing** directly from the built-in wizard (recommended)  
-  → the flasher downloads the correct firmware automatically, so you **do not need to download any .bin files manually**.
+### Front-switch-terminated unloading
 
-- **Local flashing** using a firmware file you downloaded yourself.
+Normal commanded unload is sensor-driven rather than distance-driven.
 
-The flasher also supports **Android**, so you can even flash the BMCU directly from your **phone** 🙂
+```text
+printer commands unload / pullback
+        ↓
+BMCU retracts filament
+        ↓
+front/output microswitch changes present → absent
+        ↓
+50 ms debounce
+        ↓
+motor stops
+        ↓
+unloaded / idle
+```
 
-IMPORTANT:
-- Do **NOT** flash the BMCU while it is connected to the printer.
-- Do **NOT** connect or disconnect the BMCU while the printer is powered on (risk of damaging the BMCU and/or the printer mainboard).
+A successful front-switch clear goes directly to the unloaded idle state. It does **not** enter the old redetect path and does not intentionally drive the filament again after a confirmed unload.
 
----
+### Configurable maximum retract distance
 
-## SOLO firmware
+Firmware builds are provided with selectable retract limits.
 
-Example file:
+The configured distance is a **maximum / fallback distance**, not the normal unload distance.
 
-solo_0.095f.bin
+For example:
 
-This firmware is intended for single BMCU (SOLO) operation.
+```text
+..._010  = maximum retract 100 mm
+..._050  = maximum retract 500 mm
+..._090  = maximum retract 900 mm
+```
 
-- Recommended for single-BMCU setups
-- Filament retraction length: 9.5 cm
+If the front/output microswitch clears before the configured maximum, the motor stops at the switch-clear event.
 
----
+If the front switch never clears, the configured build length acts as the `MAX_DISTANCE` safety limit.
 
-## Filament retraction explanation
+Available limits:
 
-Filament retraction must be calculated from the end of the AMS splitter inside the printer
-(the plastic AMS part where four PTFE tubes enter).
+```text
+010  100 mm
+020  200 mm
+025  250 mm
+030  300 mm
+035  350 mm
+040  400 mm
+045  450 mm
+050  500 mm
+055  550 mm
+060  600 mm
+065  650 mm
+070  700 mm
+075  750 mm
+080  800 mm
+085  850 mm
+090  900 mm
+```
 
-Example:
+### Pullback safety
 
-- Distance from BMCU to the end of the AMS splitter: approximately 9.0 cm
-- SOLO firmware retracts the filament about 0.5 cm past the splitter
-- Total retraction length: 9.5 cm
+Normal unload completion:
 
-When calculating your own retraction length:
+- `FRONT_SWITCH_CLEARED`
 
-- Always measure from the end of the AMS splitter
-- Add the required distance plus approximately 9 cm, depending on your setup
+Safety termination conditions include:
 
----
+- `MAX_DISTANCE`
+- `TIMEOUT`
+- `ENCODER_FAULT`
 
-## AMS_A / AMS_B / AMS_C / AMS_D firmware
+The former hidden jam-path behaviour that forced a fixed 100 mm retract and disabled the front-switch endpoint has been removed.
 
-These firmware versions are intended for:
-
-- Multi-BMCU setups
-- Longer filament retraction distances
-
-If you want to use SOLO mode with a longer retraction, use AMS_A instead of SOLO.
-
----
-
-## Calibration (first start)
-
-Correct calibration is mandatory.
-Without proper calibration, BMCU will not work correctly.
-
-The calibration process is shown in the following video:
-
-https://www.youtube.com/watch?v=Hn_DNzSmhuc
-
-Follow the calibration steps shown in the video carefully.
-
----
-
-## Re-calibration
-
-You can recalibrate the BMCU at any time.
-
-Steps:
-
-1. Remove all filaments from all channels
-2. Hold any one buffer in position for approximately 5 seconds
-
----
-
-## Safety and usage notes
-
-- Do not flash BMCU while it is connected to the printer
-- Do not disconnect BMCU while the printer is powered on
-- Do not update printer firmware while BMCU is connected
-- Connect/disconnect the BMCU ONLY when the printer is completely powered off (unplugged). Doing this while powered can damage the BMCU and/or the printer mainboard.
-
-These recommendations are based on community reports.
-Not all failure scenarios have been tested.
-
-Changing the printer mode from AMS Lite to AMS while BMCU was connected did not cause issues in testing, but this is not recommended.
+AS5600 health is monitored during motion so an encoder failure cannot allow an uncontrolled retract to continue indefinitely.
 
 ---
 
-## Disclaimer
+# Bambu AMS protocol support
 
-You are using this firmware and performing any modifications at your own risk.
-Make sure you understand what you are doing.
-I am not responsible for any damage, failed prints, hardware issues, or data loss.
+The firmware contains a substantially expanded BambuBus implementation and now separates **physical device identity** from the **logical AMS ID assigned on the bus**.
 
----
+## Stable physical identity
 
-## Before opening a bug report
+Each BMCU builds a stable serial/hardware identity from the CH32 MCU unique ID.
 
-Please verify the basics first:
+That means:
 
-- Make sure you flashed the correct firmware variant and followed the flashing tutorial correctly.
-- Make sure you really have **BMCU 370C with Hall sensors**.
-    - The only reliable verification is to open the module and inspect the PCB.
-    - Some sellers mix modules and try to get rid of older **370x** boards - sometimes 1-2 modules in the set can be 370x.
-- If you have printer-side issues:
-    - confirm you are on the latest printer firmware
-    - do a factory reset (this often fixes weird AMS-related behavior)
-- If filament detection behaves strangely:
-    - boot the printer once without BMCU connected
-    - then connect BMCU and test again
-- Do a few real tests before creating a thread.
-  Printers can have unrelated issues (rare, but happens) - some users cannot even update printer firmware automatically and must do it via SD card.
+```text
+same physical BMCU
+        ↓
+reboot / firmware restart
+        ↓
+same physical serial identity
+```
 
-## Bug reports
+The permanent device identity is kept separate from the current logical AMS slot.
 
-If you encounter a real bug, you may report it.
-This firmware has undergone solid testing, and no issues are expected.
+## Dynamic AMS ID
 
----
+Dynamic AMS identity is enabled by default.
 
-# Changelog
+The protocol state supports logical AMS IDs:
 
-## V10.5
+```text
+0 = AMS A
+1 = AMS B
+2 = AMS C
+3 = AMS D
+```
 
-### User-visible changes
-- Added **automatic filament unload when the buffer is lifted manually**.
-- The serial is generated from the MCU hardware UID, so devices no longer share the same SN.
-- Calibration now performs a **full NVM cleanup**.
-- Fixed the rare issue where the **system LED could blink incorrectly** on some BMCU units.
-- Fixed the **external fan issue on Bambu Lab P2S**.
+and uses:
 
-## V10.4
+```text
+0xFF = unassigned
+```
 
-### User-visible changes
-- Added support for **Bambu Lab P2S**.
-  - Verified to work correctly in real tests.
-  - The **H2 series** will most likely also work as well, because **1st generation AMS support** is confirmed there.
+The runtime state machine includes:
 
-### Fixes
-- **"filament in use"** flag is now cleared correctly when filament runs out during printing.
-- Added support for **retraction when the buffer is pulled up manually**, even when there is **no filament inside**.
+```text
+UNASSIGNED
+ASSIGNED
+REGISTERING
+ONLINE
+LOST_HOST
+```
 
-## V10.3
+The current assigned ID is used by motion, status, filament, version, serial, and MC-online protocol handlers rather than blindly answering as a compile-time slot.
 
-### User-visible changes
-- Added new firmware mode: **soft_load(A1)**.
-    - Intended mainly for **A1 / A1 Mini** users.
-    - Uses lower filament loading force than **standard(A1)**.
-    - Useful for some BMCU units with weaker lever springs, where stronger loading can cause clicking / grinding during filament load.
-- Improved empty-channel detection calibration.
-    - The firmware now calibrates and stores the "no filament" detection point separately for each channel.
-    - This improves reliability on hardware variants where idle detection voltage differs between channels/modules.
-- Improved calibration behavior:
-    - calibration now also detects and saves **Hall polarity per channel**
-    - magnet polarity is automatically detected during calibration and stored, so it no longer matters which way the magnet is inserted in the buffer
+## ID assignment and persistence
 
-### Stability and behavior improvements
-- Fixed PWM timer preload configuration on all motor channels.
-    - PWM updates are now buffered correctly before timer update events.
-- Improved AS5600 update timing.
-    - Sensor polling is now rate-limited to about **1 ms**
-    - more stable speed calculation
-    - lower unnecessary CPU load
-- Improved internal timing paths by reusing shared tick snapshots in the main motion loop.
-    - less timing jitter
-    - more consistent runtime behavior
-- Improved high-load / jam timing logic during on_use.
-    - high PWM accumulation now uses **microsecond precision** instead of millisecond buckets
-- Improved motion loop time-step handling.
-    - uses wrap-safe tick delta
-    - clamps oversized time steps
-    - avoids running motor control with invalid zero-step timing
+When dynamic-ID operation is enabled, the assigned AMS bus ID is stored in the existing flash/NVM system.
 
-### Notes
-- `soft_load(A1)` is not meant as the default for everyone.
-- If filament gets rejected because push force is too weak, switch back to `standard(A1)` and use a stronger lever spring.
-- On some A1 / A1 Mini units, `soft_load(A1)` works very well and can be used permanently.
+On reboot:
 
-## V10.2
+```text
+valid stored ID
+        ↓
+restore ID
+        ↓
+registration starts again as a transient state
+```
 
-### User-visible changes
-- Fixed a problem where **filament run-out could incorrectly trigger a jam condition**.  
-  When filament ended, the motor could run continuously and eventually enter jam protection, which blocked the **automatic filament refill**.
-- Reworked jam protection logic:
-    - real filament jams are now detected separately from temporary motor stops
-    - high motor load alone no longer falsely triggers a jam
-- Improved flash persistence system (less unnecessary flash rewriting).
-- Improved ADC/DMA processing:
-    - faster value updates
-    - lower CPU overhead
-    - smoother runtime behavior
-- Various timing and stability improvements.
+The registration state itself is not persisted.
 
-### Technical changes
-- **Filament metadata flash storage redesigned.**
-    - append-only journal instead of rewriting a full flash page
-    - each record: **40 bytes (10 words)**
-    - **CRC32 validation**
-    - **6 records per flash page**
-    - page erase only when the page becomes full  
-      This significantly reduces flash wear and makes writes power-loss safe.
-- Loaded-channel persistence reworked into a lightweight **slot log** to reduce erase cycles.
-- Added **skip-if-unchanged** logic to avoid unnecessary flash writes.
-- Simplified and optimized **ADC DMA update/publish path**.
-- CRC tables moved to **static compile-time tables** (no runtime generation).
-- Cleanup of timing paths using **wrap-safe 32-bit timers**.
-- Several other smaller fixes and internal optimizations.
+This is deliberate: the device remembers its logical assignment, but still performs the current online/registration handshake with the printer after restart.
 
-## V10
+A dedicated persistent ID-clear path is also present in the identity subsystem. Development builds can force the stored assignment to be cleared on boot with `BMCU_CLEAR_ASSIGNED_ID_ON_BOOT` when required for enumeration testing.
 
-### User-visible changes
-- Improved spool jam handling: jam is detected immediately, the print is paused, the printer waits for you to fix the snag/tangle, then you can resume normally without ruining the print.
+## Online detection and registration
 
-### Flash / persistence (wear + reliability)
-- State (loaded channel) persistence reworked into an append-only slot log: 8 bytes per update, up to 192 updates before any page erase (~192x fewer erase cycles vs rewriting a whole 256B page per update).
-- Filament metadata persistence reworked into a small CRC-protected log: 64B per update, 2 pages per filament (8 records) -> ~8x fewer erase cycles vs erasing a whole 256B page on every change.
-- Per-filament saves: only the modified channel is written (reduces unnecessary flash writes).
-- Power-loss safe commits: records are validated and partially-written data is ignored.
+The existing Bambu online-detect exchange has been integrated into the runtime identity layer.
 
-## V9
+The device can participate in discovery/registration, accept a valid AMS ID in the online-detect exchange, rebuild its protocol-visible identity using that ID, and complete registration without relying solely on a compile-time `BAMBU_BUS_AMS_NUM` value.
 
-### User-visible changes
-- Increased filament loading force for improved reliability during filament insertion.
-- Improved filament loading behavior on some materials (e.g. **Sunlu PLA+** and similar filaments) where loading characteristics differ from standard PLA/PETG.
-- Added protection against **spool jams**:
-    - Lock mode activates if the buffer drops too low during printing.
-    - Lock mode also activates if the motor runs at high speed continuously for ~8 seconds.
-    - The lock is automatically released once the buffer returns to the neutral position.
-    - Prevents prolonged motor overrun when filament movement is blocked.
+The registration exchange retains the observed `0x0C` / `0x0A` online-detect phases used by the existing protocol implementation.
 
-## V8
+## Hot plug and automatic re-registration
 
-### User-visible changes
-- Supported print resume after a printer power reset / power loss (printing can be resumed properly).
-- Improved behavior for **P1S** (loading problems due to long/bent PTFE path).
-- Added AUTOLOAD support for **single-switch PCB** boards:
-    - Triggered by pressing the buffer ("buffer tap").
-    - Starts filament loading exactly like the external switch trigger.
-- More stable loading process overall.
-- Improved support for **low-torque BMCU** variants.
+The firmware now supports **protocol-level hot plug, reconnect, and host-restart recovery**.
 
-## V7
+Important behaviours include:
 
-### User-visible changes
-- **Remember loaded filaments (persistent state).**  
-  You can load filament and safely power off the printer.  
-  This allows you to disable the automatic unload-at-end behavior in G-code (if you often print with one filament),
-  keeping filament loaded until you actually need to change it.  
-  More info here: https://wiki.bambulab.com/en/ams/manual/ams-not-unloading-to-save-filament
-- **100% solved filament loading problems.** The system is stable and consistent across hardware variants.
-- **Filament RGB colors.** Modules/LEDs can display the configured filament color.
+- a BMCU can join the bus while the printer is already running and participate in the normal online-detect/registration process
+- loss of printer heartbeat clears the transient registration state
+- the persisted AMS ID is retained across host loss
+- when the printer returns, the BMCU can register again without requiring a BMCU power cycle
+- a printer reboot while the BMCU remains powered is handled as host loss followed by re-registration
+- disconnect/reconnect no longer requires the firmware to remain stuck in an old registered state
 
-### AUTOLOAD (short)
-**How AUTOLOAD works**
-- **DM (two microswitches):**
-    - Touch first switch → AUTOLOAD starts (you may need a light manual push until gears grab).
-    - BMCU feeds filament until the second switch (behind extruder) confirms **fully inserted**.
-    - Then it feeds 120 mm to make it print-ready.
-    - **Anti-snag protection:** buffer position is monitored; if the filament catches on housing / PTFE edge, it retracts to safe position and retries (3 retries).
-- **Single-switch boards:**
-    - Stage 1 is manual (no second switch to confirm fully-in).
-    - Once filament is fully in the extruder, Stage 2 behaves the same (incl. anti-snag protection).
+Conceptually:
 
-### Technical changes
-- **ADC_DMA upgraded (ADC1 + ADC2 in parallel):**
-    - Regular simultaneous mode: ADC1+ADC2 scan channels in parallel to reduce noise and increase throughput.
-    - Lower noise enabled smaller filtering and faster stable readout.
-    - Full filtered update time: **~5 ms instead of ~28 ms**.
-- **AS5600 reading correctness improved** (robustness and stability of reads).
-- **Timer/tick safety (wrap safety):** all time comparisons reviewed to be correct under wrap-around.
-- Final stabilization and cleanup: overall behavior is faster and more deterministic than previous releases.
-- There were more fixes in V7 as well; easiest is to check the commit history.
+```text
+ONLINE
+   ↓ heartbeat lost
+LOST_HOST
+   ↓ printer returns / discovery resumes
+REGISTERING
+   ↓ registration succeeds
+ONLINE
+```
 
-**Final note:** all known issues were ultimately resolved. BMCU is fully stable and significantly faster vs older firmware.
-At this moment I do not expect any further fixes.
+The persistent logical ID is not erased simply because the printer disappears temporarily.
+
+This hot-plug support is a **firmware/protocol capability**. As with any exposed powered bus, users are still responsible for correct hardware wiring and avoiding shorts or connector misalignment.
+
+## Firmware and model identity
+
+Firmware identity is centralized in:
+
+```text
+src/firmware_identity.h
+```
+
+The current protocol identity uses:
+
+```text
+model: AMS08
+version bytes: 00 00 32 0A
+```
+
+The BambuBus implementation responds to the established long-frame version query rather than maintaining disconnected version bytes in multiple handlers.
+
+## Implemented protocol handling
+
+The current code recognizes and/or implements the following established traffic:
+
+| Packet / type | Purpose |
+|---|---|
+| short `0x03` | filament motion command |
+| short `0x04` | AMS status / motion exchange |
+| short `0x05` | online detect / registration |
+| short `0x08` | filament metadata update |
+| short `0x20` | heartbeat |
+| long `0x0103` | firmware/model version query |
+| long `0x0211` | filament information read |
+| long `0x0218` | filament information update |
+| long `0x021A` | MC-online query |
+| long `0x0402` | serial-number / identity query |
+| long `0x040D` | certification frame recognition / observation |
+| long `0x040E` | authorization frame recognition / observation |
+
+CRC8/CRC16 validation, short/long frame parsing, package-number handling, request targeting, and response source/target swapping remain part of the bus layer.
+
+### Certification and authorization frames
+
+`0x040D` and `0x040E` are recognized so they can be observed and diagnosed, but this repository does **not** claim to possess or reproduce Bambu Lab private credentials, device certificates, or private signing keys.
+
+Recognition of those frames is separate from ordinary AMS protocol compatibility.
 
 ---
 
-## V6
+# Protocol tracing
 
-## Framework
-- Dropped Arduino Core (PlatformIO: framework = arduino) - the whole firmware was rewritten to pure CH32 (WCH SDK / noneos).
-- Direct use of hardware timers, DMA and interrupts - no Arduino delays, no random timing, deterministic real-time behavior.
-- Faster and correct flash operations (WCH Fast API) - stable writes, faster, without corrupting neighboring data.
+For protocol development, the firmware contains an optional trace mode:
 
-## ADC_DMA
-- Separated DMA writes from CPU reads - previously reads happened while DMA was overwriting the buffer.
-- Filter is computed in the background (DMA half/full), not during readout - previously `get_value()` blocked CPU and broke timing.
-- Constant CPU load - previously larger filter window slowed the system down.
-- DMA error handling
+```cpp
+BMCU_BAMBU_PROTOCOL_TRACE=1
+```
 
-## BUS (BambuBus + AHUB)
-- Fixed RX/TX buffer race (reading and overwriting the same buffer at the same time).
-- Snapshot-based parsing instead of working on a live buffer
-- Deterministic frame handling timing - constant CPU cost, independent from packet length.
-- Robustness against transmission errors - a bad packet does not break the whole system state.
+It is disabled by default.
 
-## Flash / NVM
-- Flash written page-by-page (256B) instead of erasing/programming the whole sector (4KB)
-- Write only when data actually changed
-- Hardware CRC for flash + verification on read
-- AMS data split into separate records - changing one filament does not rewrite the whole structure.
+When enabled it can report events such as:
 
-## Soft-I2C / AS5600
-- Rewritten from Arduino, removed timing bugs and Arduino "magic".
-- Correct ACK/NACK, START/STOP, recovery handling
-- Hard isolation of channels with errors
+```text
+BBUS RX SHORT ...
+BBUS RX LONG ...
+BBUS TX LONG ...
+ID ASSIGNED ...
+ID CLEAR ...
+REGISTER START ...
+REGISTER OK ...
+```
 
-## Motion / mechanics
-- Smoother motor control
-- Added calibration buffers - filament stays in a neutral position, without unnecessary tension.
-- Better state transitions - no jerks and no sudden braking.
+Unknown packets are rate-limited in the debug output so new protocol traffic can be investigated without flooding logs with heartbeat frames.
 
-## Misc
-- CRC8 / CRC16 rewritten to simple C + lookup tables - faster, deterministic, no objects and no runtime init.
-- Partially de-spaghettified includes
-- and many more - firmware prepared for further development
+---
+
+# Firmware builds
+
+The repository currently keeps the following release/build families:
+
+```text
+AMS A
+AMS B
+AMS C
+AMS D
+SOLO
+LITE
+```
+
+Each is generated for all 16 maximum retract limits listed above.
+
+This produces the current 96-build release matrix:
+
+```text
+6 roles × 16 retract limits = 96 firmware binaries
+```
+
+Example environment names:
+
+```text
+dm_pro_ams_a_010
+dm_pro_ams_a_050
+dm_pro_ams_b_050
+dm_pro_ams_c_090
+dm_pro_ams_d_050
+dm_pro_solo_050
+dm_pro_lite_050
+```
+
+Example release binary names:
+
+```text
+BMCU-DM-PRO-AMS-A-010.bin
+BMCU-DM-PRO-AMS-A-050.bin
+BMCU-DM-PRO-AMS-B-050.bin
+BMCU-DM-PRO-SOLO-090.bin
+```
+
+Dynamic AMS identity is enabled in the firmware protocol layer. The A/B/C/D build families are currently retained for compatibility, testing, and release organization rather than being the sole source of runtime AMS identity.
+
+SOLO and LITE builds are retained as dedicated build families. Where they do not yet contain a distinct protocol implementation, the repository does not claim behaviour that is not present in the source.
+
+---
+
+# Releases and generated artifacts
+
+GitHub Actions builds and packages the firmware matrix.
+
+Release/package output includes:
+
+- all generated `.bin` files
+- role-specific ZIP files
+- complete all-firmware ZIP
+- `manifest.json`
+- `manifest.csv`
+- SHA-256 checksums
+- generated firmware documentation
+
+Role packages include:
+
+```text
+BMCU-DM-PRO-AMS-A.zip
+BMCU-DM-PRO-AMS-B.zip
+BMCU-DM-PRO-AMS-C.zip
+BMCU-DM-PRO-AMS-D.zip
+BMCU-DM-PRO-SOLO.zip
+BMCU-DM-PRO-LITE.zip
+BMCU-DM-PRO-ALL.zip
+```
+
+The release manifest records the build environment, role, retract limit, binary size, SHA-256, Git commit, source ref, PlatformIO/Python versions, and the firmware's documented load/unload semantics.
+
+Tagged `v*` builds are packaged as GitHub Releases. Normal branch and pull-request builds produce GitHub Actions artifacts without publishing a release.
+
+---
+
+# Building locally
+
+This project uses PlatformIO with the CH32V platform.
+
+Build a specific environment with:
+
+```bash
+pio run -e dm_pro_ams_a_050
+```
+
+Other examples:
+
+```bash
+pio run -e dm_pro_ams_a_010
+pio run -e dm_pro_ams_b_050
+pio run -e dm_pro_ams_d_090
+pio run -e dm_pro_solo_050
+pio run -e dm_pro_lite_050
+```
+
+The normal PlatformIO binary is created under:
+
+```text
+.pio/build/<environment>/firmware.bin
+```
+
+For normal use, the packaged GitHub Actions / Release artifacts are easier to identify because they include consistent filenames, manifests, and checksums.
+
+---
+
+# Choosing a retract-limit build
+
+Choose a limit that is comfortably longer than the physical distance required for the filament to clear the front/output microswitch during unload.
+
+For example, if the front switch normally clears after approximately 120 mm of retract, a 100 mm maximum build cannot reach the normal front-switch completion condition. A 200 mm or larger maximum gives the sensor-driven unload enough room to complete normally.
+
+The best test build when validating a new physical arrangement is usually one with a deliberately generous limit, for example `_050`, then confirm through observation or protocol/debug logging that unload stops on:
+
+```text
+FRONT_SWITCH_CLEARED
+```
+
+rather than:
+
+```text
+MAX_DISTANCE
+```
+
+The configured maximum exists as a safety fallback, not as a requirement to retract that entire distance.
+
+---
+
+# Calibration and persistent settings
+
+The firmware continues to use the existing BMCU flash/NVM layer for calibration, filament metadata, loaded-channel state, and AMS bus-ID persistence.
+
+Do not erase or reset calibration merely to change the assigned AMS bus ID. Bus assignment and physical calibration are separate pieces of state.
+
+The ID-clear path is intended to clear logical bus assignment only; it is not intended to erase filament data, DM calibration, or the hardware-derived permanent serial identity.
+
+---
+
+# Current design summary
+
+```text
+LOAD
+
+filament inserted from spool side
+→ rear microswitch activates
+→ automatic feed
+→ front/output side reached
+→ loaded
 
 
-## Final note
+PRINT
 
-This firmware started as a personal CH32 learning project.
-During development it grew far beyond the original scope because working on BMCU turned out to be genuinely enjoyable.
+AS5600 + buffer/pressure control remain active
 
-Many solutions are intentionally overengineered.
-Everything was implemented primarily for personal use and experimentation.
 
-The firmware has been used extensively during development,
-and no practical issues were observed in real-world usage.
+UNLOAD
+
+printer commands pullback
+→ feeder retracts
+→ rear switch may change
+→ rear switch is ignored as unload endpoint
+→ front switch changes present → absent
+→ debounce
+→ motor stops
+→ idle/unloaded
+
+
+BUS IDENTITY
+
+physical serial derived from MCU UID
+→ logical AMS ID assigned at runtime
+→ assignment persisted
+→ transient registration performed with printer
+→ heartbeat loss resets registration, not permanent identity
+→ host return re-registers automatically
+```
+
+---
+
+# Project relationship and responsibility
+
+This fork is an interoperability project built on the original BMCU work. It is not official Bambu Lab firmware and is not affiliated with Bambu Lab.
+
+Bambu Lab, AMS, AMS Lite, and related product names are trademarks of their respective owner.
+
+Hardware modifications and third-party firmware are used at your own risk. Verify wiring, firmware target, and mechanical clearances before operating the feeder.
+
+For the original BMCU project, hardware documentation, broader firmware variants, and upstream development, see:
+
+https://github.com/jarczakpawel/BMCU-C-PJARCZAK
