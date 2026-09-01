@@ -33,6 +33,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Run host protocol vectors
+        run: |
+          g++ -std=c++17 -O2 -Wall -Wextra -Werror \
+            tests/bambu_protocol_vectors.cpp src/crc_bus.c -Isrc \
+            -o /tmp/bambu_protocol_vectors
+          /tmp/bambu_protocol_vectors
+
       - name: Check platformio.ini contains all 96 expected environments
         run: python3 scripts/validate_build_matrix.py --check-ini --ini platformio.ini
 

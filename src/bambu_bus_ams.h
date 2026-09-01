@@ -16,6 +16,8 @@ enum class bambubus_package_type
     set_filament_info_type2,
     version,
     serial_number,
+    certification,
+    authorization,
     heartbeat,
     ETC,
 

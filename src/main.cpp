@@ -7,6 +7,7 @@
 #include "ams.h"
 #include "ahub_bus.h"
 #include "bambu_bus_ams.h"
+#include "bambu_bus_identity.h"
 #include "ADC_DMA.h"
 #include "Debug_log.h"
 #include <string.h>
@@ -54,7 +55,7 @@ static uint8_t g_state_dirty = 0;
 
 static inline void ram_to_flashinfo(uint8_t fil, Flash_FilamentInfo* o)
 {
-    const _filament* f = &ams[BAMBU_BUS_AMS_NUM].filament[fil];
+    const _filament* f = &ams[bambubus_local_ams_index()].filament[fil];
 
     memcpy(o->bambubus_filament_id, f->bambubus_filament_id, sizeof(o->bambubus_filament_id));
     o->color_R = f->color_R;
@@ -68,7 +69,7 @@ static inline void ram_to_flashinfo(uint8_t fil, Flash_FilamentInfo* o)
 
 static inline void flashinfo_to_ram(uint8_t fil, const Flash_FilamentInfo* i)
 {
-    _filament* f = &ams[BAMBU_BUS_AMS_NUM].filament[fil];
+    _filament* f = &ams[bambubus_local_ams_index()].filament[fil];
 
     memcpy(f->bambubus_filament_id, i->bambubus_filament_id, sizeof(i->bambubus_filament_id));
     f->color_R = i->color_R;
@@ -204,7 +205,7 @@ int main(void)
 
             if (ch < 4u)
             {
-                _ams* a = &ams[BAMBU_BUS_AMS_NUM];
+                _ams* a = &ams[bambubus_local_ams_index()];
 
                 a->now_filament_num  = ch;
                 a->filament_use_flag = 0x04;

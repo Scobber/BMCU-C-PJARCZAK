@@ -9,6 +9,7 @@
 #include "app_api.h"
 #include "_bus_hardware.h"
 #include "ams.h"
+#include "bambu_bus_identity.h"
 #include "crc_bus.h"
 
 typedef uint32_t u32_alias __attribute__((may_alias));
@@ -303,7 +304,7 @@ void ahubus_slave_get_package_set(uint8_t *buf)
         if (filament_channel >= 4) return;
         memcpy(&(ams[set_adr].filament[filament_channel].bambubus_filament_id), data_ptr + 4, 44);
 
-        if (set_adr == (uint8_t)BAMBU_BUS_AMS_NUM)
+        if (set_adr == bambubus_local_ams_index())
             ams_datas_set_need_to_save_filament(filament_channel);
 
         break;
@@ -409,4 +410,3 @@ ahubus_package_type ahubus_run()
 
     return package_type;
 }
-

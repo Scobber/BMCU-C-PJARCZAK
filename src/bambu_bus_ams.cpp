@@ -6,10 +6,14 @@
 #include "app_api.h"
 #include "_bus_hardware.h"
 #include "crc_bus.h"
+#include "Debug_log.h"
+#include "bambu_bus_identity.h"
+#include "firmware_identity.h"
 
-uint8_t bambubus_ams_map[4] = {0, 1, 2, 3};
-static void bambubus_build_static_serial(void);
+uint8_t bambubus_ams_map[4] = {0, 0, 0, 0};
 static uint32_t bambubus_heartbeat_deadline = 0u;
+static uint8_t long_packge_version_serial_number[67] = {0};
+static void bambubus_trace_tx(uint8_t short_long, uint16_t cmd, uint16_t payload_len);
 
 void bambubus_heartbeat_seen_fast(void)
 {
@@ -29,7 +33,12 @@ bool package_check_crc16(uint8_t *data, int data_length)
 
 void bambubus_init()
 {
-    bambubus_build_static_serial();
+    bambubus_identity_init();
+    bambubus_ams_map[0] = bambubus_local_ams_index();
+    bambubus_ams_map[1] = bambubus_local_ams_index();
+    bambubus_ams_map[2] = bambubus_local_ams_index();
+    bambubus_ams_map[3] = bambubus_local_ams_index();
+    bambubus_build_identity_blob(long_packge_version_serial_number);
     bambubus_heartbeat_deadline = 0u;
 }
 
@@ -76,6 +85,7 @@ void bambubus_long_package_get(bambubus_long_packge_data *data)
 
     package_add_crc(out, data->data_length + 15);
     bus_port_to_host.send_data_len = data->data_length + 15;
+    bambubus_trace_tx(1u, data->type, data->data_length);
 }
 
 void bambubus_long_package_analysis(uint8_t *buf, int data_length, bambubus_long_packge_data *data)
@@ -92,14 +102,73 @@ void bambubus_long_package_analysis(uint8_t *buf, int data_length, bambubus_long
 bambubus_long_packge_data printer_data_long;
 
 static uint8_t online_detect_prefix_now = 0x0Cu;
-static bool have_registered = false;
 static uint8_t online_detect_phase = 0u;
 
 static inline void online_detect_reset(void)
 {
-    have_registered = false;
+    bambubus_reset_registration();
     online_detect_prefix_now = 0x0Cu;
     online_detect_phase = 0u;
+}
+
+static void bambubus_trace_state(const char* msg)
+{
+#if BMCU_BAMBU_PROTOCOL_TRACE
+    DEBUG(msg);
+#else
+    (void)msg;
+#endif
+}
+
+static void bambubus_trace_cmd(uint8_t short_long, uint16_t cmd, uint16_t src, uint16_t dst, uint16_t payload_len)
+{
+#if BMCU_BAMBU_PROTOCOL_TRACE
+    if (short_long == 0u && cmd == 0x20u) return;
+    if (short_long == 0u) { DEBUG("BBUS RX SHORT "); }
+    else { DEBUG("BBUS RX LONG "); }
+    DEBUG("cmd/type="); DEBUG_num("", (int)cmd);
+    DEBUG(" src="); DEBUG_num("", (int)src);
+    DEBUG(" dst="); DEBUG_num("", (int)dst);
+    DEBUG(" len="); DEBUG_num("", (int)payload_len);
+    DEBUG("\n");
+#else
+    (void)short_long; (void)cmd; (void)src; (void)dst; (void)payload_len;
+#endif
+}
+
+static void bambubus_trace_unknown(uint8_t short_long, uint16_t cmd)
+{
+#if BMCU_BAMBU_PROTOCOL_TRACE
+    static uint16_t last_cmd = 0xFFFFu;
+    static uint8_t last_short_long = 0xFFu;
+    static uint32_t last_ticks = 0u;
+    const uint32_t now = time_ticks32();
+    if (last_cmd == cmd && last_short_long == short_long && (uint32_t)(now - last_ticks) < ms_to_ticks32(250u)) return;
+    last_cmd = cmd;
+    last_short_long = short_long;
+    last_ticks = now;
+    DEBUG("BBUS UNKNOWN cmd/type=");
+    DEBUG_num("", (int)cmd);
+    DEBUG("\n");
+#else
+    (void)short_long;
+    (void)cmd;
+#endif
+}
+
+static void bambubus_trace_tx(uint8_t short_long, uint16_t cmd, uint16_t payload_len)
+{
+#if BMCU_BAMBU_PROTOCOL_TRACE
+    if (short_long == 0u) DEBUG("BBUS TX SHORT ");
+    else DEBUG("BBUS TX LONG ");
+    DEBUG("cmd/type=");
+    DEBUG_num("", (int)cmd);
+    DEBUG(" len=");
+    DEBUG_num("", (int)payload_len);
+    DEBUG("\n");
+#else
+    (void)short_long; (void)cmd; (void)payload_len;
+#endif
 }
 
 bambubus_package_type get_packge_type(unsigned char *buf, int length)
@@ -110,6 +179,7 @@ bambubus_package_type get_packge_type(unsigned char *buf, int length)
 
     if (buf[1] == 0xC5)
     {
+        bambubus_trace_cmd(0u, buf[4], 0u, 0u, (uint16_t)length);
         switch (buf[4])
         {
         case 0x03:
@@ -127,6 +197,7 @@ bambubus_package_type get_packge_type(unsigned char *buf, int length)
         case 0x20:
             return bambubus_package_type::heartbeat;
         default:
+            bambubus_trace_unknown(0u, buf[4]);
             return bambubus_package_type::ETC;
         }
     }
@@ -134,6 +205,7 @@ bambubus_package_type get_packge_type(unsigned char *buf, int length)
     {
         if (length < 15) return bambubus_package_type::none;
         bambubus_long_package_analysis(buf, length, &printer_data_long);
+        bambubus_trace_cmd(1u, printer_data_long.type, printer_data_long.source_address, printer_data_long.target_address, printer_data_long.data_length);
         if (printer_data_long.target_address != host_device_type_ams)
         {
             return bambubus_package_type::none;
@@ -151,7 +223,12 @@ bambubus_package_type get_packge_type(unsigned char *buf, int length)
             return bambubus_package_type::version;
         case 0x402:
             return bambubus_package_type::serial_number;
+        case 0x40D:
+            return bambubus_package_type::certification;
+        case 0x40E:
+            return bambubus_package_type::authorization;
         default:
+            bambubus_trace_unknown(1u, printer_data_long.type);
             return bambubus_package_type::ETC;
         }
     }
@@ -180,10 +257,11 @@ static uint8_t last_before_on_use_motion_flag = 0x00;
 static uint8_t count_on_use = 0u;
 bool set_motion(unsigned char read_num, unsigned char statu_flags, unsigned char fliment_motion_flag, uint8_t ams_num)
 {
-    const uint8_t fixed_ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
-    if (ams_num != fixed_ams_num) return false;
+    const uint8_t current_id = bambubus_current_ams_id();
+    if (!bambubus_has_assigned_id()) return false;
+    if (ams_num != current_id) return false;
 
-    _ams *ams_ptr = &ams[bambubus_ams_map[fixed_ams_num]];
+    _ams *ams_ptr = &ams[bambubus_local_ams_index()];
 
     if (read_num < 4)
     {
@@ -220,7 +298,7 @@ bool set_motion(unsigned char read_num, unsigned char statu_flags, unsigned char
                     ams_ptr->pressure = 0xF9C6;
                     time_sendout_onuse_ticks[prev] = 0u;
                 }
-                bus_now_ams_num = bambubus_ams_map[fixed_ams_num];
+                bus_now_ams_num = bambubus_local_ams_index();
                 ams_ptr->now_filament_num = ch;
             }
         }
@@ -555,14 +633,15 @@ void get_package_motion(bambubus_printer_motion_package_struct *package_recv)
     bambubus_printer_motion_package_struct in;
     memcpy(&in, package_recv, sizeof(in));
 
-    const uint8_t fixed_ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
-    if (in.ams_num != fixed_ams_num) return;
+    const uint8_t ams_id = bambubus_current_ams_id();
+    if (!bambubus_has_assigned_id()) return;
+    if (in.ams_num != ams_id) return;
 
-    const uint8_t ams_idx = bambubus_ams_map[fixed_ams_num];
+    const uint8_t ams_idx = bambubus_local_ams_index();
     if (!ams[ams_idx].online) return;
 
     _ams *ams_ptr = &ams[ams_idx];
-    if (!set_motion(in.filamnet_channel, in.statu_flag, in.motion_flag, fixed_ams_num)) return;
+    if (!set_motion(in.filamnet_channel, in.statu_flag, in.motion_flag, ams_id)) return;
 
     auto *package_send = (bambubus_ams_motion_package_struct *)out;
     memcpy(package_send, &_bambubus_ams_motion_package_struct_init_data, sizeof(*package_send));
@@ -572,7 +651,7 @@ void get_package_motion(bambubus_printer_motion_package_struct *package_recv)
     const uint16_t pressure = is_idle ? 0xFF74 : ams_ptr->pressure;
 
     package_send->flag = 0xC0 | (uint8_t)(package_num << 3);
-    package_send->ams_num = fixed_ams_num;
+    package_send->ams_num = ams_id;
     package_send->filament_use_flag = is_idle ? 0x00 : ams_ptr->filament_use_flag;
     package_send->filament_channel = ch;
     package_send->filament_channel_2 = ch;
@@ -641,6 +720,7 @@ void get_package_motion(bambubus_printer_motion_package_struct *package_recv)
 
     package_add_crc(out, sizeof(bambubus_ams_motion_package_struct));
     bus_port_to_host.send_data_len = sizeof(bambubus_ams_motion_package_struct);
+    bambubus_trace_tx(0u, 0x03u, (uint16_t)sizeof(bambubus_ams_motion_package_struct));
 }
 
 // 3D C5 0D F1 04 00 01 00 03 FF 00 B2 C4
@@ -732,10 +812,11 @@ void get_package_stu_motion(bambubus_printer_stu_motion_package_struct *package_
     unsigned char filament_flag_on  = 0x00;
     unsigned char filament_flag_NFC = 0x00;
 
-    const uint8_t fixed_ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
-    if (in.ams_num != fixed_ams_num) return;
+    const uint8_t ams_id = bambubus_current_ams_id();
+    if (!bambubus_has_assigned_id()) return;
+    if (in.ams_num != ams_id) return;
 
-    const uint8_t ams_idx = bambubus_ams_map[fixed_ams_num];
+    const uint8_t ams_idx = bambubus_local_ams_index();
     if (!ams[ams_idx].online) return;
 
     _ams *ams_ptr = &ams[ams_idx];
@@ -744,7 +825,7 @@ void get_package_stu_motion(bambubus_printer_stu_motion_package_struct *package_
         if (ams_ptr->filament[i].online)
             filament_flag_on |= (uint8_t)(1u << i);
 
-    if (!set_motion(in.filamnet_channel, in.statu_flag, in.motion_flag, fixed_ams_num)) return;
+    if (!set_motion(in.filamnet_channel, in.statu_flag, in.motion_flag, ams_id)) return;
 
     auto *package_send = (bambubus_ams_stu_motion_package_struct *)out;
     memcpy(package_send, &_bambubus_ams_stu_motion_package_struct_init_data, sizeof(*package_send));
@@ -772,7 +853,7 @@ void get_package_stu_motion(bambubus_printer_stu_motion_package_struct *package_
     const uint16_t pressure = is_idle ? 0xFF74 : ams_ptr->pressure;
 
     package_send->flag = 0xC0 | (uint8_t)(package_num << 3);
-    package_send->ams_num_stu = fixed_ams_num;
+    package_send->ams_num_stu = ams_id;
     package_send->temperature = (uint16_t)temperature;
     package_send->humidity = (uint8_t)humidity;
 
@@ -784,7 +865,7 @@ void get_package_stu_motion(bambubus_printer_stu_motion_package_struct *package_
     package_send->filament_channel_stu = in.filamnet_channel;
     package_send->filament_flag_wait_NFC = filament_flag_NFC;
 
-    package_send->ams_num = fixed_ams_num;
+    package_send->ams_num = ams_id;
     package_send->filament_use_flag = is_idle ? 0x00 : ams_ptr->filament_use_flag;
     package_send->filament_channel = ch;
 
@@ -806,6 +887,7 @@ void get_package_stu_motion(bambubus_printer_stu_motion_package_struct *package_
     package_num = (package_num < 7u) ? (uint8_t)(package_num + 1u) : 0u;
 
     bus_port_to_host.send_data_len = sizeof(bambubus_ams_stu_motion_package_struct);
+    bambubus_trace_tx(0u, 0x04u, (uint16_t)sizeof(bambubus_ams_stu_motion_package_struct));
 }
 
 uint8_t online_detect_res[29] = {
@@ -813,8 +895,6 @@ uint8_t online_detect_res[29] = {
     0x0D, 0x0E, 0xA0, '5', '5', '0', '0', 0x00, 0x00, '0', '0', '0', '0', 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00,
     0x33, 0xF0
 };
-
-extern unsigned char long_packge_version_serial_number[];
 
 static inline void online_detect_build_packet(const uint8_t ams_num, const uint8_t subtype)
 {
@@ -832,21 +912,24 @@ static inline void online_detect_build_packet(const uint8_t ams_num, const uint8
 
 void get_package_online_detect(unsigned char *buf, int length)
 {
-    (void)length;
+    if (length < 25) return;
     if (bus_port_to_host.send_data_len != 0) return;
 
-    const uint8_t ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
-    if (ams_num >= 4u) return;
+    const uint8_t ams_idx = bambubus_local_ams_index();
+    if (ams_idx >= 4u) return;
 
-    if (ams[bambubus_ams_map[ams_num]].online != true)
+    if (ams[ams_idx].online != true)
     {
         online_detect_reset();
         return;
     }
 
+    uint8_t ams_num = bambubus_current_ams_id();
+    if (!bambubus_has_assigned_id()) ams_num = BAMBU_AMS_ID_UNASSIGNED;
+
     if (buf[5] == 0x00)
     {
-        if (have_registered) return;
+        if (bambubus_is_registered()) return;
 
         if (online_detect_phase == 0u)
         {
@@ -859,29 +942,42 @@ void get_package_online_detect(unsigned char *buf, int length)
             online_detect_phase = 2u;
         }
 
+        bambubus_mark_registering();
         online_detect_build_packet(ams_num, 0x00);
 
         uint8_t *out = bus_port_to_host.tx_build_buf();
         memcpy(out, online_detect_res, 29);
         bus_port_to_host.send_data_len = 29;
+        bambubus_trace_tx(0u, 0x05u, 29u);
         return;
     }
 
     if (buf[5] != 0x01) return;
-    if (buf[6] != ams_num) return;
+    if (buf[6] > BAMBU_AMS_MAX_ID) return;
+    if (bambubus_has_assigned_id() && buf[6] != bambubus_current_ams_id()) return;
 
     online_detect_prefix_now = 0x0Au;
+    const bool had_id = bambubus_has_assigned_id();
+    const uint8_t old_id = bambubus_current_ams_id();
+    if (!bambubus_set_assigned_id(buf[6])) return;
+    ams_num = bambubus_current_ams_id();
+    bambubus_build_identity_blob(long_packge_version_serial_number);
     online_detect_build_packet(ams_num, 0x01);
 
     if (memcmp(online_detect_res + 7, buf + 7, 17) != 0)
+    {
+        if (!had_id) bambubus_clear_assigned_id();
+        else if (old_id != ams_num) bambubus_set_assigned_id(old_id);
         return;
+    }
 
-    have_registered = true;
+    bambubus_mark_registered();
     online_detect_phase = 3u;
 
     uint8_t *out = bus_port_to_host.tx_build_buf();
     memcpy(out, online_detect_res, 29);
     bus_port_to_host.send_data_len = 29;
+    bambubus_trace_tx(0u, 0x05u, 29u);
 }
 
 void get_package_long_packge_MC_online(unsigned char *buf, int length)
@@ -889,13 +985,13 @@ void get_package_long_packge_MC_online(unsigned char *buf, int length)
     (void)buf;
     (void)length;
 
-    const uint8_t fixed_ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
-
     if (printer_data_long.data_length < 1u) return;
-    if (!ams[bambubus_ams_map[fixed_ams_num]].online) return;
-    if (printer_data_long.datas[0] != fixed_ams_num) return;
+    if (!bambubus_has_assigned_id()) return;
+    const uint8_t ams_num = bambubus_current_ams_id();
+    if (!ams[bambubus_local_ams_index()].online) return;
+    if (printer_data_long.datas[0] != ams_num) return;
 
-    unsigned char resp[6] = {fixed_ams_num, 0x00, 0x00, 0x00, 0x00, 0x00};
+    unsigned char resp[6] = {ams_num, 0x00, 0x00, 0x00, 0x00, 0x00};
 
     bambubus_long_packge_data data;
     data.datas = resp;
@@ -923,17 +1019,19 @@ void get_package_long_packge_filament(unsigned char *buf, int length)
     (void)length;
 
     bambubus_long_packge_data data;
+    if (printer_data_long.data_length < 2u) return;
 
-    const uint8_t fixed_ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
+    if (!bambubus_has_assigned_id()) return;
+    const uint8_t fixed_ams_num = bambubus_current_ams_id();
     const uint8_t ams_num = printer_data_long.datas[0];
     const uint8_t filament_num = printer_data_long.datas[1];
 
-    if (ams_num != fixed_ams_num || filament_num >= 4 || ams[bambubus_ams_map[fixed_ams_num]].online != true)
+    if (ams_num != fixed_ams_num || filament_num >= 4 || ams[bambubus_local_ams_index()].online != true)
     {
         return;
     }
 
-    _ams *ams_ptr = ams + bambubus_ams_map[fixed_ams_num];
+    _ams *ams_ptr = ams + bambubus_local_ams_index();
     long_packge_filament[0] = fixed_ams_num;
     long_packge_filament[1] = filament_num;
     memcpy(long_packge_filament + 19, ams_ptr->filament[filament_num].bambubus_filament_id, sizeof(ams_ptr->filament[filament_num].bambubus_filament_id));
@@ -955,103 +1053,25 @@ void get_package_long_packge_filament(unsigned char *buf, int length)
     bambubus_long_package_get(&data);
 }
 
-unsigned char long_packge_version_serial_number[] = {15,
-                                                     '0', 'E', 'A', '0', '3', '0', '3', '0', '3', '0', '3', '0', '0', '0', '0',
-                                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                                     0x00,
-                                                     0x0E, 0xA0, 0x30, 0x30, 0x30, 0x30, 0x00, 0x00,
-                                                     0x30, 0x30, 0x30, 0x30,
-                                                     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-                                                     0x00,
-                                                     0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00,
-                                                     0x00};
-
-static void bambubus_build_static_serial(void)
-{
-    static const char hex[] = "0123456789ABCDEF";
-    volatile const uint8_t *uid = (volatile const uint8_t *)0x1FFFF7E8;
-    const uint8_t ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
-
-    uint64_t v = 1469598103934665603ull;
-    for (int i = 0; i < 12; i++)
-    {
-        v ^= uid[i];
-        v *= 1099511628211ull;
-    }
-
-    v ^= v >> 30;
-    v *= 0xBF58476D1CE4E5B9ull;
-    v ^= v >> 27;
-    v *= 0x94D049BB133111EBull;
-    v ^= v >> 31;
-
-    long_packge_version_serial_number[0] = 15;
-    long_packge_version_serial_number[1] = '0';
-    long_packge_version_serial_number[2] = 'E';
-    long_packge_version_serial_number[3] = 'A';
-    long_packge_version_serial_number[4] = '0' + ams_num;
-
-    {
-        const uint8_t b0 = (uint8_t)(v >> 56);
-        const uint8_t b1 = (uint8_t)(v >> 48);
-        const uint8_t b2 = (uint8_t)(v >> 40);
-        const uint8_t b3 = (uint8_t)(v >> 32);
-        const uint8_t b4 = (uint8_t)(v >> 24);
-        const uint8_t b5 = (uint8_t)(v >> 16);
-
-        long_packge_version_serial_number[5]  = hex[(b0 >> 4) & 0x0F];
-        long_packge_version_serial_number[6]  = hex[b0 & 0x0F];
-        long_packge_version_serial_number[7]  = hex[(b1 >> 4) & 0x0F];
-        long_packge_version_serial_number[8]  = hex[b1 & 0x0F];
-        long_packge_version_serial_number[9]  = hex[(b2 >> 4) & 0x0F];
-        long_packge_version_serial_number[10] = hex[b2 & 0x0F];
-        long_packge_version_serial_number[11] = hex[(b3 >> 4) & 0x0F];
-        long_packge_version_serial_number[12] = hex[b3 & 0x0F];
-        long_packge_version_serial_number[13] = hex[(b4 >> 4) & 0x0F];
-        long_packge_version_serial_number[14] = hex[b4 & 0x0F];
-        long_packge_version_serial_number[15] = hex[(b5 >> 4) & 0x0F];
-    }
-
-    long_packge_version_serial_number[33] = 0x0E;
-    long_packge_version_serial_number[34] = (uint8_t)(0xA0 + ams_num);
-    long_packge_version_serial_number[35] = (uint8_t)(v >> 56);
-    long_packge_version_serial_number[36] = (uint8_t)(v >> 48);
-    long_packge_version_serial_number[37] = (uint8_t)(v >> 40);
-    long_packge_version_serial_number[38] = (uint8_t)(v >> 32);
-    long_packge_version_serial_number[39] = (uint8_t)(v >> 24);
-    long_packge_version_serial_number[40] = (uint8_t)(v >> 16);
-    long_packge_version_serial_number[41] = (uint8_t)(v >> 24);
-    long_packge_version_serial_number[42] = (uint8_t)(v >> 16);
-    long_packge_version_serial_number[43] = (uint8_t)(v >> 8);
-    long_packge_version_serial_number[44] = (uint8_t)(v >> 0);
-    long_packge_version_serial_number[45] = 0xFF;
-    long_packge_version_serial_number[46] = 0xFF;
-    long_packge_version_serial_number[47] = 0xFF;
-    long_packge_version_serial_number[48] = 0xFF;
-    long_packge_version_serial_number[65] = ams_num;
-
-    online_detect_reset();
-    online_detect_res[6] = ams_num;
-    memcpy(online_detect_res + 8, long_packge_version_serial_number + 33, 16);
-}
-
 void get_package_long_packge_serial_number(unsigned char *buf, int length)
 {
     (void)buf;
     (void)length;
 
-    const uint8_t ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
+    if (!bambubus_has_assigned_id()) return;
+    const uint8_t ams_num = bambubus_current_ams_id();
 
     if ((printer_data_long.data_length > 33) && (printer_data_long.datas[33] != ams_num))
     {
         return;
     }
 
-    if (ams[bambubus_ams_map[ams_num]].online != true)
+    if (ams[bambubus_local_ams_index()].online != true)
     {
         return;
     }
 
+    bambubus_build_identity_blob(long_packge_version_serial_number);
     bambubus_long_packge_data data;
     data.datas = long_packge_version_serial_number;
     data.data_length = sizeof(long_packge_version_serial_number);
@@ -1062,22 +1082,18 @@ void get_package_long_packge_serial_number(unsigned char *buf, int length)
     bambubus_long_package_get(&data);
 }
 
-//0x0A // 10
-//0x14 // 20
-//0x1E // 30
-//0x28 // 40
-//0x32 // 50
-//0x3C // 60
-//0x46 // 70
-//0x50 // 80
-//0x5A // 90
-unsigned char long_packge_version_version_and_name_AMS08[] = {0x00, 0x00, 0x32, 0x0A , // verison number
-                                                              0x41, 0x4D, 0x53, 0x30, 0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-//unsigned char long_packge_version_version_and_name_AMS2PRO[] = {
-//    0x00, 0x00, 0x00, 0x5A,
-//    0x4E, 0x33, 0x46, 0x30, 0x35, 0x00, 0x00, 0x00,
-//    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-//};
+struct BambuAmsVersionResponse
+{
+    uint8_t version[4];
+    char model[16];
+    uint8_t assigned_id;
+} __attribute__((packed));
+
+static BambuAmsVersionResponse long_packge_version_version_and_name_AMS08 = {
+    {BMCU_FW_VERSION_MAJOR, BMCU_FW_VERSION_MINOR, BMCU_FW_VERSION_PATCH, BMCU_FW_VERSION_BUILD},
+    {0},
+    0x00
+};
 
 
 void get_package_long_packge_version(unsigned char *buf, int length)
@@ -1085,16 +1101,20 @@ void get_package_long_packge_version(unsigned char *buf, int length)
     (void)buf;
     (void)length;
 
-    const uint8_t fixed_ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
+    if (printer_data_long.data_length < 1u) return;
+    if (!bambubus_has_assigned_id()) return;
+    const uint8_t fixed_ams_num = bambubus_current_ams_id();
     const uint8_t ams_num = printer_data_long.datas[0];
 
-    if (ams_num != fixed_ams_num || ams[bambubus_ams_map[fixed_ams_num]].online != true)
+    if (ams_num != fixed_ams_num || ams[bambubus_local_ams_index()].online != true)
         return;
 
-    long_packge_version_version_and_name_AMS08[sizeof(long_packge_version_version_and_name_AMS08) - 1u] = fixed_ams_num;
+    memset(long_packge_version_version_and_name_AMS08.model, 0, sizeof(long_packge_version_version_and_name_AMS08.model));
+    memcpy(long_packge_version_version_and_name_AMS08.model, BMCU_BAMBU_MODEL_STRING, sizeof(BMCU_BAMBU_MODEL_STRING) - 1u);
+    long_packge_version_version_and_name_AMS08.assigned_id = fixed_ams_num;
 
     bambubus_long_packge_data data;
-    data.datas = long_packge_version_version_and_name_AMS08;
+    data.datas = (uint8_t*)&long_packge_version_version_and_name_AMS08;
     data.data_length = (uint16_t)sizeof(long_packge_version_version_and_name_AMS08);
     data.package_number = printer_data_long.package_number;
     data.type = printer_data_long.type;
@@ -1107,19 +1127,20 @@ void get_package_long_packge_version(unsigned char *buf, int length)
 unsigned char set_filament_res[] = {0x3D, 0xC0, 0x08, 0xB2, 0x08, 0x60, 0xB4, 0x04};
 void get_package_set_filament(unsigned char *buf, int length)
 {
-    (void)length;
+    if (length < 39) return;
 
     if (bus_port_to_host.send_data_len != 0) return;
     uint8_t* out = bus_port_to_host.tx_build_buf();
     uint8_t b = buf[5];
 
-    const uint8_t fixed_ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
+    if (!bambubus_has_assigned_id()) return;
+    const uint8_t fixed_ams_num = bambubus_current_ams_id();
     uint8_t ams_num  = (b >> 4) & 0x0F;
     uint8_t read_num = (b >> 0) & 0x0F;
 
-    if (ams_num != fixed_ams_num || read_num >= 4 || ams[bambubus_ams_map[fixed_ams_num]].online != true) return;
+    if (ams_num != fixed_ams_num || read_num >= 4 || ams[bambubus_local_ams_index()].online != true) return;
 
-    _ams *ams_ptr = ams + bambubus_ams_map[fixed_ams_num];
+    _ams *ams_ptr = ams + bambubus_local_ams_index();
     memcpy(ams_ptr->filament[read_num].bambubus_filament_id, buf + 7, sizeof(ams_ptr->filament[read_num].bambubus_filament_id));
     ams_ptr->filament[read_num].color_R = buf[15];
     ams_ptr->filament[read_num].color_G = buf[16];
@@ -1131,23 +1152,26 @@ void get_package_set_filament(unsigned char *buf, int length)
     ams_ptr->filament[read_num].name[19] = 0;
     memcpy(out, set_filament_res, sizeof(set_filament_res));
     bus_port_to_host.send_data_len = sizeof(set_filament_res);
+    bambubus_trace_tx(0u, 0x08u, (uint16_t)sizeof(set_filament_res));
 }
 unsigned char set_filament_res_type2[] = {0x00, 0x00, 0x00};
 void get_package_set_filament_type2(unsigned char *buf, int length)
 {
     if (bus_port_to_host.send_data_len != 0) return;
     (void)buf;
-    (void)length;
+    if (length < 35) return;
 
     bambubus_long_packge_data data;
 
-    const uint8_t fixed_ams_num = (uint8_t)BAMBU_BUS_AMS_NUM;
+    if (printer_data_long.data_length < 34u) return;
+    if (!bambubus_has_assigned_id()) return;
+    const uint8_t fixed_ams_num = bambubus_current_ams_id();
     const uint8_t ams_num  = printer_data_long.datas[0];
     const uint8_t read_num = printer_data_long.datas[1];
 
-    if (ams_num != fixed_ams_num || read_num >= 4 || ams[bambubus_ams_map[fixed_ams_num]].online != true) return;
+    if (ams_num != fixed_ams_num || read_num >= 4 || ams[bambubus_local_ams_index()].online != true) return;
 
-    _ams *ams_ptr = ams + bambubus_ams_map[fixed_ams_num];
+    _ams *ams_ptr = ams + bambubus_local_ams_index();
 
     memcpy(ams_ptr->filament[read_num].bambubus_filament_id,
            printer_data_long.datas + 2,
@@ -1177,6 +1201,11 @@ void get_package_set_filament_type2(unsigned char *buf, int length)
     data.target_address = printer_data_long.source_address;
 
     bambubus_long_package_get(&data);
+}
+
+static void get_package_long_auth_observe(void)
+{
+    bambubus_trace_state("AUTH_UNSUPPORTED\n");
 }
 
 bambubus_package_type bambubus_run()
@@ -1244,15 +1273,22 @@ bambubus_package_type bambubus_run()
 
                 get_package_set_filament(buf, len);
 
-                if (ams_num == (uint8_t)BAMBU_BUS_AMS_NUM && fil < 4)
+                if (ams_num == bambubus_current_ams_id() && fil < 4)
                     ams_datas_set_need_to_save_filament(fil);
                 break;
             }
 
             case bambubus_package_type::set_filament_info_type2:
                 get_package_set_filament_type2(buf, len);
-                if (printer_data_long.datas[0] == (uint8_t)BAMBU_BUS_AMS_NUM && printer_data_long.datas[1] < 4)
+                if (printer_data_long.data_length >= 2u &&
+                    printer_data_long.datas[0] == bambubus_current_ams_id() &&
+                    printer_data_long.datas[1] < 4)
                     ams_datas_set_need_to_save_filament(printer_data_long.datas[1]);
+                break;
+
+            case bambubus_package_type::certification:
+            case bambubus_package_type::authorization:
+                get_package_long_auth_observe();
                 break;
 
             default:
@@ -1281,12 +1317,19 @@ bambubus_package_type bambubus_run()
     {
         last_hb_deadline = hb_deadline;
         if (time_diff32(hb_deadline, now) > 0)
+        {
+            bambubus_heartbeat_alive(true);
             stu = bambubus_package_type::heartbeat;
+        }
     }
 
     if (time_diff32(now, hb_deadline) > 0)
+    {
+        bambubus_heartbeat_alive(false);
+        if (bambubus_has_assigned_id())
+            bambubus_reset_registration();
         stu = bambubus_package_type::error;
+    }
 
     return stu;
 }
-

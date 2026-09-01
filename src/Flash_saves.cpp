@@ -241,6 +241,8 @@ static uint16_t g_sta_seq = 0u;
 static uint16_t g_sta_slot = 0u;
 static uint8_t g_sta_have_saved = 0u;
 static uint8_t g_sta_saved_loaded = 0xFFu;
+static uint8_t g_sta_saved_id = 0xFFu;
+static uint8_t g_sta_saved_id_valid = 0u;
 
 static void flash_runtime_cache_clear(void)
 {
@@ -252,6 +254,8 @@ static void flash_runtime_cache_clear(void)
     g_sta_slot = 0u;
     g_sta_have_saved = 0u;
     g_sta_saved_loaded = 0xFFu;
+    g_sta_saved_id = 0xFFu;
+    g_sta_saved_id_valid = 0u;
 }
 
 bool Flash_NVM_full_clear(void)
@@ -283,6 +287,70 @@ static inline uint32_t sta_slot_addr(uint32_t slot)
     return sta_page_addr(page_i) + slot_i * STA_SLOT_BYTES;
 }
 
+static void flash_sta_scan(void)
+{
+    uint8_t best_ch = 0xFFu;
+    uint8_t best_id = 0xFFu;
+    uint8_t best_id_valid = 0u;
+    uint16_t best_seq = 0u;
+    uint32_t best_slot = 0u;
+    uint8_t have = 0u;
+
+    for (uint32_t slot = 0u; slot < STA_TOTAL_SLOTS; slot++)
+    {
+        const uint32_t a = sta_slot_addr(slot);
+        const uint32_t w0 = *(const volatile uint32_t*)(a + 0u);
+        const uint32_t w1 = *(const volatile uint32_t*)(a + 4u);
+
+        if (flash_word_is_blank(w0) && flash_word_is_blank(w1)) continue;
+        const uint32_t tag = (w0 >> 24);
+        const uint16_t seq = (uint16_t)((w0 >> 8) & 0xFFFFu);
+        const uint8_t value = (uint8_t)(w0 & 0xFFu);
+
+        if (tag == STA_TAG && (w0 ^ w1) == MAGIC_STA)
+        {
+            if (!have || (int16_t)(seq - best_seq) > 0)
+            {
+                have = 1u;
+                best_seq = seq;
+                best_ch = value & 0x0Fu;
+                if (value == 0xFFu)
+                {
+                    best_ch = 0xFFu;
+                    best_id = 0xFFu;
+                    best_id_valid = 0u;
+                }
+                else
+                {
+                    if (best_ch > 3u && best_ch != 0x0Fu) best_ch = 0xFFu;
+                    if (best_ch == 0x0Fu) best_ch = 0xFFu;
+                    best_id = (uint8_t)((value >> 4) & 0x03u);
+                    best_id_valid = (value & 0x80u) ? 1u : 0u;
+                }
+                best_slot = slot;
+            }
+        }
+    }
+
+    if (have)
+    {
+        g_sta_seq = (uint16_t)(best_seq + 1u);
+        g_sta_slot = (uint16_t)((best_slot + 1u) % STA_TOTAL_SLOTS);
+        g_sta_have_saved = 1u;
+        g_sta_saved_loaded = best_ch;
+    }
+    else
+    {
+        g_sta_seq = 0u;
+        g_sta_slot = 0u;
+        g_sta_have_saved = 0u;
+        g_sta_saved_loaded = 0xFFu;
+    }
+
+    g_sta_saved_id = best_id;
+    g_sta_saved_id_valid = have ? best_id_valid : 0u;
+}
+
 void Flash_saves_init(void)
 {
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
@@ -291,6 +359,7 @@ void Flash_saves_init(void)
 
     for (uint8_t i = 0u; i < 4u; i++)
         fil_cache_load_one(i);
+    flash_sta_scan();
 }
 
 bool Flash_AMS_filament_write(uint8_t filament_idx, const Flash_FilamentInfo* info)
@@ -347,60 +416,32 @@ bool Flash_AMS_filament_clear(uint8_t filament_idx)
 bool Flash_AMS_state_read(uint8_t* loaded_ch)
 {
     if (!loaded_ch) return false;
+    flash_sta_scan();
+    *loaded_ch = g_sta_saved_loaded;
+    return true;
+}
 
-    uint8_t best_ch = 0xFFu;
-    uint16_t best_seq = 0u;
-    uint32_t best_slot = 0u;
-    uint8_t have = 0u;
-
-    for (uint32_t slot = 0u; slot < STA_TOTAL_SLOTS; slot++)
-    {
-        const uint32_t a = sta_slot_addr(slot);
-        const uint32_t w0 = *(const volatile uint32_t*)(a + 0u);
-        const uint32_t w1 = *(const volatile uint32_t*)(a + 4u);
-
-        if (flash_word_is_blank(w0) && flash_word_is_blank(w1)) continue;
-        if ((w0 >> 24) != STA_TAG) continue;
-        if ((w0 ^ w1) != MAGIC_STA) continue;
-
-        const uint16_t seq = (uint16_t)((w0 >> 8) & 0xFFFFu);
-        const uint8_t ch = (uint8_t)(w0 & 0xFFu);
-
-        if (!have || (int16_t)(seq - best_seq) > 0)
-        {
-            have = 1u;
-            best_seq = seq;
-            best_ch = ch;
-            best_slot = slot;
-        }
-    }
-
-    if (have)
-    {
-        g_sta_seq = (uint16_t)(best_seq + 1u);
-        g_sta_slot = (uint16_t)((best_slot + 1u) % STA_TOTAL_SLOTS);
-        g_sta_have_saved = 1u;
-        g_sta_saved_loaded = best_ch;
-    }
-    else
-    {
-        g_sta_seq = 0u;
-        g_sta_slot = 0u;
-        g_sta_have_saved = 0u;
-        g_sta_saved_loaded = 0xFFu;
-    }
-
-    *loaded_ch = best_ch;
+bool Flash_AMS_bus_id_read(uint8_t* assigned_id, bool* valid)
+{
+    if (!assigned_id || !valid) return false;
+    flash_sta_scan();
+    *assigned_id = g_sta_saved_id;
+    *valid = g_sta_saved_id_valid ? true : false;
     return true;
 }
 
 bool Flash_AMS_state_write(uint8_t loaded_ch)
 {
+    if (loaded_ch > 3u && loaded_ch != 0xFFu) return false;
     if (g_sta_have_saved && g_sta_saved_loaded == loaded_ch)
         return true;
 
     const uint16_t seq = g_sta_seq;
-    const uint32_t w0 = ((uint32_t)STA_TAG << 24) | ((uint32_t)seq << 8) | (uint32_t)loaded_ch;
+    const uint8_t loaded_nibble = (loaded_ch == 0xFFu) ? 0x0Fu : (loaded_ch & 0x0Fu);
+    const uint8_t id_bits = g_sta_saved_id_valid ? (uint8_t)((g_sta_saved_id & 0x03u) << 4) : 0u;
+    const uint8_t valid_bit = g_sta_saved_id_valid ? 0x80u : 0x00u;
+    const uint8_t packed = (uint8_t)(valid_bit | id_bits | loaded_nibble);
+    const uint32_t w0 = ((uint32_t)STA_TAG << 24) | ((uint32_t)seq << 8) | (uint32_t)packed;
     const uint32_t w1 = w0 ^ MAGIC_STA;
     const uint32_t slot = (uint32_t)g_sta_slot;
     const uint32_t addr = sta_slot_addr(slot);
@@ -418,6 +459,46 @@ bool Flash_AMS_state_write(uint8_t loaded_ch)
     g_sta_have_saved = 1u;
     g_sta_saved_loaded = loaded_ch;
 
+    return true;
+}
+
+bool Flash_AMS_bus_id_write(uint8_t assigned_id, bool valid)
+{
+    if (assigned_id > 3u) return false;
+    if (g_sta_saved_id == assigned_id && g_sta_saved_id_valid == (valid ? 1u : 0u))
+        return true;
+
+    const uint16_t seq = g_sta_seq;
+    const uint32_t slot = (uint32_t)g_sta_slot;
+    const uint32_t addr = sta_slot_addr(slot);
+    const uint8_t loaded_nibble = (g_sta_saved_loaded == 0xFFu) ? 0x0Fu : (g_sta_saved_loaded & 0x0Fu);
+    const uint8_t valid_bit = valid ? 0x80u : 0x00u;
+    const uint8_t packed = (uint8_t)(valid_bit | ((assigned_id & 0x03u) << 4) | loaded_nibble);
+    const uint32_t w0 = ((uint32_t)STA_TAG << 24) | ((uint32_t)seq << 8) | (uint32_t)packed;
+    const uint32_t w1 = w0 ^ MAGIC_STA;
+    const uint32_t buf[2] = { w0, w1 };
+
+    if (!flash_prog_words(addr, buf, 2u))
+    {
+        const uint32_t page_i = slot / STA_SLOTS_PER_PAGE;
+        if (!flash256_erase(sta_page_addr(page_i))) return false;
+        if (!flash_prog_words(addr, buf, 2u)) return false;
+    }
+
+    g_sta_seq = (uint16_t)(seq + 1u);
+    g_sta_slot = (uint16_t)((slot + 1u) % STA_TOTAL_SLOTS);
+    g_sta_have_saved = 1u;
+    g_sta_saved_id = assigned_id;
+    g_sta_saved_id_valid = (valid ? 1u : 0u);
+    return true;
+}
+
+bool Flash_AMS_bus_id_clear(void)
+{
+    const bool ok = Flash_AMS_bus_id_write(0u, false);
+    if (!ok) return false;
+    g_sta_saved_id = 0xFFu;
+    g_sta_saved_id_valid = 0u;
     return true;
 }
 
