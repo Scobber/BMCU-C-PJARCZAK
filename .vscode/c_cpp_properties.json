@@ -1,0 +1,58 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "C:/Users/scobb/Sources/BMCU-C-PJARCZAK/src",
+                "C:/Users/scobb/.platformio/packages/framework-wch-noneos-sdk/Core/ch32v20x",
+                "C:/Users/scobb/.platformio/packages/framework-wch-noneos-sdk/Peripheral/ch32v20x/inc",
+                "C:/Users/scobb/.platformio/packages/framework-wch-noneos-sdk/Peripheral/ch32v20x/src",
+                "C:/Users/scobb/.platformio/packages/framework-wch-noneos-sdk/Startup",
+                "C:/Users/scobb/.platformio/packages/framework-wch-noneos-sdk/System/ch32v20x",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "C:/Users/scobb/Sources/BMCU-C-PJARCZAK/src",
+                    "C:/Users/scobb/.platformio/packages/framework-wch-noneos-sdk/Core/ch32v20x",
+                    "C:/Users/scobb/.platformio/packages/framework-wch-noneos-sdk/Peripheral/ch32v20x/inc",
+                    "C:/Users/scobb/.platformio/packages/framework-wch-noneos-sdk/Peripheral/ch32v20x/src",
+                    "C:/Users/scobb/.platformio/packages/framework-wch-noneos-sdk/Startup",
+                    "C:/Users/scobb/.platformio/packages/framework-wch-noneos-sdk/System/ch32v20x",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=60119",
+                "CH32V203C8",
+                "CH32V20X",
+                "CH32V20x",
+                "CH32V203",
+                "CH32V20x_D6",
+                "SYSCLK_FREQ_144MHz_HSI=144000000",
+                "BMCU_DM_TWO_MICROSWITCH=1",
+                "SYSCLK_FREQ_144MHz_HSI=144000000",
+                "SYSCLK_FREQ_144MHZ_HSI=144000000",
+                "__PIO_CPP_SUPPORT__",
+                ""
+            ],
+            "cStandard": "gnu99",
+            "cppStandard": "gnu++17",
+            "compilerPath": "C:/Users/scobb/.platformio/packages/toolchain-riscv/bin/riscv-wch-elf-gcc.exe",
+            "compilerArgs": [
+                "-msmall-data-limit=8",
+                "-msave-restore",
+                "-march=rv32imacxw",
+                "-mabi=ilp32",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}

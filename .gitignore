@@ -1,0 +1,9 @@
+.pio/
+*.o
+*.elf
+*.map
+*.lst
+dist/
+dist-stage/
+diagnostics/
+BMCU-DM-PRO-*.zip

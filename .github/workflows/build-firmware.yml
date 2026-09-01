@@ -1,0 +1,461 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# BMCU 370C DM PRO — GitHub Actions build / package / release pipeline
+#
+# Builds all 96 DM PRO firmware environments (6 roles × 16 retract limits),
+# validates the matrix, packages binaries into role ZIPs and a complete ZIP,
+# generates manifests and checksums, uploads Actions artifacts, and optionally
+# publishes a GitHub Release on version tag pushes.
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Build DM PRO Firmware
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "copilot/**"
+    tags:
+      - "v*"
+
+# Least-privilege defaults; the release job overrides where needed.
+permissions:
+  contents: read
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Validate platformio.ini before spinning up 96 matrix jobs
+# ─────────────────────────────────────────────────────────────────────────────
+jobs:
+  validate-matrix:
+    name: Validate build matrix
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check platformio.ini contains all 96 expected environments
+        run: python3 scripts/validate_build_matrix.py --check-ini --ini platformio.ini
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Matrix build — one job per environment
+  # ───────────────────────────────────────────────────────────────────────────
+  build:
+    name: "Build ${{ matrix.environment }}"
+    needs: validate-matrix
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        environment:
+          # ── AMS A ──
+          - dm_pro_ams_a_010
+          - dm_pro_ams_a_020
+          - dm_pro_ams_a_025
+          - dm_pro_ams_a_030
+          - dm_pro_ams_a_035
+          - dm_pro_ams_a_040
+          - dm_pro_ams_a_045
+          - dm_pro_ams_a_050
+          - dm_pro_ams_a_055
+          - dm_pro_ams_a_060
+          - dm_pro_ams_a_065
+          - dm_pro_ams_a_070
+          - dm_pro_ams_a_075
+          - dm_pro_ams_a_080
+          - dm_pro_ams_a_085
+          - dm_pro_ams_a_090
+          # ── AMS B ──
+          - dm_pro_ams_b_010
+          - dm_pro_ams_b_020
+          - dm_pro_ams_b_025
+          - dm_pro_ams_b_030
+          - dm_pro_ams_b_035
+          - dm_pro_ams_b_040
+          - dm_pro_ams_b_045
+          - dm_pro_ams_b_050
+          - dm_pro_ams_b_055
+          - dm_pro_ams_b_060
+          - dm_pro_ams_b_065
+          - dm_pro_ams_b_070
+          - dm_pro_ams_b_075
+          - dm_pro_ams_b_080
+          - dm_pro_ams_b_085
+          - dm_pro_ams_b_090
+          # ── AMS C ──
+          - dm_pro_ams_c_010
+          - dm_pro_ams_c_020
+          - dm_pro_ams_c_025
+          - dm_pro_ams_c_030
+          - dm_pro_ams_c_035
+          - dm_pro_ams_c_040
+          - dm_pro_ams_c_045
+          - dm_pro_ams_c_050
+          - dm_pro_ams_c_055
+          - dm_pro_ams_c_060
+          - dm_pro_ams_c_065
+          - dm_pro_ams_c_070
+          - dm_pro_ams_c_075
+          - dm_pro_ams_c_080
+          - dm_pro_ams_c_085
+          - dm_pro_ams_c_090
+          # ── AMS D ──
+          - dm_pro_ams_d_010
+          - dm_pro_ams_d_020
+          - dm_pro_ams_d_025
+          - dm_pro_ams_d_030
+          - dm_pro_ams_d_035
+          - dm_pro_ams_d_040
+          - dm_pro_ams_d_045
+          - dm_pro_ams_d_050
+          - dm_pro_ams_d_055
+          - dm_pro_ams_d_060
+          - dm_pro_ams_d_065
+          - dm_pro_ams_d_070
+          - dm_pro_ams_d_075
+          - dm_pro_ams_d_080
+          - dm_pro_ams_d_085
+          - dm_pro_ams_d_090
+          # ── SOLO ──
+          - dm_pro_solo_010
+          - dm_pro_solo_020
+          - dm_pro_solo_025
+          - dm_pro_solo_030
+          - dm_pro_solo_035
+          - dm_pro_solo_040
+          - dm_pro_solo_045
+          - dm_pro_solo_050
+          - dm_pro_solo_055
+          - dm_pro_solo_060
+          - dm_pro_solo_065
+          - dm_pro_solo_070
+          - dm_pro_solo_075
+          - dm_pro_solo_080
+          - dm_pro_solo_085
+          - dm_pro_solo_090
+          # ── LITE ──
+          - dm_pro_lite_010
+          - dm_pro_lite_020
+          - dm_pro_lite_025
+          - dm_pro_lite_030
+          - dm_pro_lite_035
+          - dm_pro_lite_040
+          - dm_pro_lite_045
+          - dm_pro_lite_050
+          - dm_pro_lite_055
+          - dm_pro_lite_060
+          - dm_pro_lite_065
+          - dm_pro_lite_070
+          - dm_pro_lite_075
+          - dm_pro_lite_080
+          - dm_pro_lite_085
+          - dm_pro_lite_090
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Cache the PlatformIO home directory (toolchains, framework, packages).
+      # Do NOT cache .pio/build — stale build objects must never be mistaken
+      # for fresh firmware output.
+      - name: Cache PlatformIO packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: pio-${{ runner.os }}-${{ hashFiles('platformio.ini') }}
+          restore-keys: |
+            pio-${{ runner.os }}-
+
+      - name: Install PlatformIO
+        run: pip install --quiet platformio==6.1.15
+
+      - name: Build ${{ matrix.environment }}
+        run: pio run -e "${{ matrix.environment }}"
+
+      # ── Collect output ──
+      - name: Collect firmware binary
+        run: |
+          mkdir -p dist-stage/${{ matrix.environment }}
+          cp .pio/build/${{ matrix.environment }}/firmware.bin \
+             dist-stage/${{ matrix.environment }}/firmware.bin
+
+      - name: Upload temporary build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "fw-${{ matrix.environment }}"
+          path: dist-stage/${{ matrix.environment }}/
+          retention-days: 1
+          if-no-files-found: error
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Packaging — runs after ALL 96 matrix jobs succeed
+  # ───────────────────────────────────────────────────────────────────────────
+  package:
+    name: Package firmware
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PlatformIO (for version reporting)
+        run: pip install --quiet platformio==6.1.15
+
+      # Download every temporary per-environment artifact into dist-stage/
+      - name: Download all firmware artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "fw-dm_pro_*"
+          path: dist-stage/
+          merge-multiple: false
+
+      # After download-artifact the layout is:
+      #   dist-stage/fw-dm_pro_ams_a_010/firmware.bin  (artifact named fw-*)
+      # Normalise to:
+      #   dist-stage/dm_pro_ams_a_010/firmware.bin
+      - name: Flatten staging directory
+        run: |
+          for d in dist-stage/fw-dm_pro_*; do
+            env_name="${d##*/fw-}"
+            mv "$d" "dist-stage/${env_name}"
+          done
+
+      # ── Validate all 96 binaries are present ──────────────────────────
+      - name: Validate collected binaries
+        run: |
+          python3 scripts/validate_build_matrix.py \
+            --check-bins \
+            --bin-dir dist-stage
+
+      # ── Build manifest.json / manifest.csv / SHA256SUMS.txt ───────────
+      - name: Build manifest
+        run: |
+          PIO_VER=$(pio --version 2>&1 | awk '{print $NF}')
+          PY_VER=$(python3 --version 2>&1 | awk '{print $2}')
+          python3 scripts/build_manifest.py \
+            --bin-dir  dist-stage \
+            --out-dir  dist \
+            --git-sha  "${{ github.sha }}" \
+            --git-ref  "${{ github.ref }}" \
+            --pio-version "$PIO_VER" \
+            --py-version  "$PY_VER" \
+            --run-id   "${{ github.run_id }}"
+
+      # ── Assemble dist/ layout and ZIP files ───────────────────────────
+      - name: Package firmware
+        run: |
+          python3 scripts/package_firmware.py \
+            --bin-dir  dist-stage \
+            --dist-dir dist \
+            --zip-dir  .
+
+      # ── GitHub Actions job summary ────────────────────────────────────
+      - name: Write job summary
+        run: |
+          python3 - <<'PYSCRIPT'
+          import json, os
+
+          with open("dist/manifest.json") as f:
+              m = json.load(f)
+
+          records = m["firmware"]
+          success = sum(1 for r in records if r["build_result"] == "SUCCESS")
+          sizes   = [r["size_bytes"] for r in records if r["size_bytes"]]
+          min_sz  = min(sizes) if sizes else 0
+          max_sz  = max(sizes) if sizes else 0
+
+          roles = {}
+          for r in records:
+              roles.setdefault(r["role"], 0)
+              if r["build_result"] == "SUCCESS":
+                  roles[r["role"]] += 1
+
+          summary = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")
+          with open(summary, "a") as f:
+              f.write("## BMCU DM PRO Firmware Build\n\n")
+              f.write(f"| Item | Value |\n|------|-------|\n")
+              f.write(f"| Commit | `{m['git_sha'][:12]}` |\n")
+              f.write(f"| Ref | `{m['git_ref']}` |\n")
+              f.write(f"| Total builds | {success}/{len(records)} |\n")
+              f.write(f"| Min firmware size | {min_sz:,} bytes |\n")
+              f.write(f"| Max firmware size | {max_sz:,} bytes |\n")
+              f.write(f"| PlatformIO | {m['pio_version']} |\n\n")
+              f.write("### Binaries per role\n\n")
+              f.write("| Role | Binaries |\n|------|----------|\n")
+              for role, count in sorted(roles.items()):
+                  f.write(f"| {role} | {count} |\n")
+              f.write("\n### Packages\n\n")
+              for zip_name in [
+                  "BMCU-DM-PRO-AMS-A.zip", "BMCU-DM-PRO-AMS-B.zip",
+                  "BMCU-DM-PRO-AMS-C.zip", "BMCU-DM-PRO-AMS-D.zip",
+                  "BMCU-DM-PRO-SOLO.zip",  "BMCU-DM-PRO-LITE.zip",
+                  "BMCU-DM-PRO-ALL.zip",
+              ]:
+                  if os.path.isfile(zip_name):
+                      sz = os.path.getsize(zip_name)
+                      f.write(f"- `{zip_name}` ({sz:,} bytes)\n")
+          PYSCRIPT
+
+      # ── Upload user-facing Actions artifacts ──────────────────────────
+      - name: Upload AMS-A artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BMCU-DM-PRO-AMS-A
+          path: BMCU-DM-PRO-AMS-A.zip
+          retention-days: 90
+
+      - name: Upload AMS-B artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BMCU-DM-PRO-AMS-B
+          path: BMCU-DM-PRO-AMS-B.zip
+          retention-days: 90
+
+      - name: Upload AMS-C artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BMCU-DM-PRO-AMS-C
+          path: BMCU-DM-PRO-AMS-C.zip
+          retention-days: 90
+
+      - name: Upload AMS-D artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BMCU-DM-PRO-AMS-D
+          path: BMCU-DM-PRO-AMS-D.zip
+          retention-days: 90
+
+      - name: Upload SOLO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BMCU-DM-PRO-SOLO
+          path: BMCU-DM-PRO-SOLO.zip
+          retention-days: 90
+
+      - name: Upload LITE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BMCU-DM-PRO-LITE
+          path: BMCU-DM-PRO-LITE.zip
+          retention-days: 90
+
+      - name: Upload ALL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BMCU-DM-PRO-ALL
+          path: BMCU-DM-PRO-ALL.zip
+          retention-days: 90
+
+      - name: Upload manifest artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: BMCU-DM-PRO-MANIFESTS
+          path: |
+            dist/manifest.json
+            dist/manifest.csv
+            dist/SHA256SUMS.txt
+            dist/README-FIRMWARE.md
+            SHA256SUMS-PACKAGES.txt
+          retention-days: 90
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Release — runs only on version tag pushes
+  # ───────────────────────────────────────────────────────────────────────────
+  release:
+    name: Publish GitHub Release
+    needs: package
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # required only for creating releases
+
+    steps:
+      # Download all user-facing artifacts produced by the package job
+      - name: Download AMS-A
+        uses: actions/download-artifact@v4
+        with:
+          name: BMCU-DM-PRO-AMS-A
+          path: release-assets/
+
+      - name: Download AMS-B
+        uses: actions/download-artifact@v4
+        with:
+          name: BMCU-DM-PRO-AMS-B
+          path: release-assets/
+
+      - name: Download AMS-C
+        uses: actions/download-artifact@v4
+        with:
+          name: BMCU-DM-PRO-AMS-C
+          path: release-assets/
+
+      - name: Download AMS-D
+        uses: actions/download-artifact@v4
+        with:
+          name: BMCU-DM-PRO-AMS-D
+          path: release-assets/
+
+      - name: Download SOLO
+        uses: actions/download-artifact@v4
+        with:
+          name: BMCU-DM-PRO-SOLO
+          path: release-assets/
+
+      - name: Download LITE
+        uses: actions/download-artifact@v4
+        with:
+          name: BMCU-DM-PRO-LITE
+          path: release-assets/
+
+      - name: Download ALL
+        uses: actions/download-artifact@v4
+        with:
+          name: BMCU-DM-PRO-ALL
+          path: release-assets/
+
+      - name: Download manifests
+        uses: actions/download-artifact@v4
+        with:
+          name: BMCU-DM-PRO-MANIFESTS
+          path: release-assets/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name:     "BMCU DM PRO ${{ github.ref_name }}"
+          draft:    false
+          prerelease: false
+          body: |
+            ## BMCU 370C DM PRO — ${{ github.ref_name }}
+
+            Firmware family for BMCU 370C DM PRO dual-microswitch hardware on Bambu Lab A1.
+
+            ### Included builds
+
+            - **AMS A/B/C/D** — select the role matching your physical AMS slot
+            - **SOLO** — alias of AMS A (no distinct protocol in current source)
+            - **LITE** — alias of AMS A (no distinct protocol in current source)
+
+            Each role is available with 16 selectable maximum retract distances
+            (100 mm – 900 mm). Normal unload always stops when the front/output
+            microswitch clears; the selected distance is a safety fallback only.
+
+            See `README-FIRMWARE.md` and `manifest.csv` for the full file listing.
+
+            ### Checksums
+
+            SHA-256 checksums for firmware binaries are in `SHA256SUMS.txt` and `manifest.json`.
+            SHA-256 checksums for release packages are in `SHA256SUMS-PACKAGES.txt`.
+          files: release-assets/**
+          token: ${{ secrets.GITHUB_TOKEN }}
