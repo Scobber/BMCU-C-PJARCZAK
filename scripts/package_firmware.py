@@ -71,13 +71,51 @@ README_TEMPLATE = """\
 
 ## Target hardware
 
-**BMCU 370C DM PRO** with dual filament microswitches, AS5600 magnetic rotary
-sensor, and a high-torque feeder motor.
+**Product:** BMCU 370C DM PRO
+**Printer:** Bambu Lab A1
 
-**Target printer:** Bambu Lab A1
+This firmware requires the **DM PRO hardware variant** with dual filament
+microswitches, an AS5600 magnetic rotary sensor, and a high-torque feeder motor.
 
-This firmware requires the DM PRO hardware variant.  Single-microswitch BMCU
-boards are **not** supported by this firmware family.
+Single-microswitch BMCU boards are **not** supported by this firmware family.
+
+---
+
+## Microswitch functions
+
+| Switch | Physical location | Function |
+|--------|-------------------|----------|
+| Rear / spool-side | Behind the feeder, toward the spool | **Autoload trigger** — inserting filament here starts automatic feeding |
+| Front / output-side | Toward the toolhead | **Normal unload completion** — unload stops when this switch clears |
+
+### Loading (autoload)
+
+1. Insert filament from the spool side.
+2. Rear/spool-side microswitch activates.
+3. Feeder motor begins advancing filament automatically.
+4. Front/output-side microswitch activates when filament arrives.
+5. Load complete.
+
+### Unloading
+
+1. Printer cuts filament and commands pull-back.
+2. Feeder retracts filament.
+3. Rear/spool microswitch may change — **this is ignored for unload completion**.
+4. Front/output microswitch transitions from present → absent.
+5. 50 ms debounce.
+6. Motor stops — **unload complete**.
+
+**The firmware does NOT normally retract the full configured distance.**
+It should stop earlier when the front/output microswitch clears.
+The configured distance is only a maximum/fallback safety limit.
+
+**Safety stops** (if front switch never clears):
+
+- `MAX_DISTANCE` — compiled maximum retract distance reached (the suffix value).
+- `TIMEOUT` — 90-second absolute timeout.
+- `ENCODER_FAULT` — AS5600 magnetic sensor failure.
+
+There is no hidden 100 mm fixed-distance jam fallback.
 
 ---
 
@@ -89,8 +127,8 @@ boards are **not** supported by this firmware family.
 | AMS B | 1               | Primary AMS slot B |
 | AMS C | 2               | Primary AMS slot C |
 | AMS D | 3               | Primary AMS slot D |
-| SOLO  | 0               | Alias of AMS A — no distinct protocol implementation in current source |
-| LITE  | 0               | Alias of AMS A — no distinct protocol implementation in current source |
+| SOLO  | 0               | Currently protocol-equivalent to AMS A — dedicated build flag reserved for future differentiation |
+| LITE  | 0               | Currently protocol-equivalent to AMS A — dedicated build flag reserved for future differentiation |
 
 Select the role that matches the physical AMS slot position of your BMCU unit.
 
@@ -98,12 +136,27 @@ Select the role that matches the physical AMS slot position of your BMCU unit.
 
 ## Retract-distance suffix
 
-The three-digit suffix in each filename is the **maximum allowed retract
-distance** during unload.  Normal unload completion is always determined by the
-front/output microswitch clearing — this distance is only a safety fallback.
+The three-digit suffix in each filename is the **maximum/fallback retract
+distance** — NOT the normal unload distance.
 
-| Suffix | Max retract |
-|--------|-------------|
+Normal unload is controlled by the front/output microswitch.
+The selected distance is only used if the switch never clears (safety fallback).
+
+### Examples
+
+| Filename | Max retract fallback |
+|----------|---------------------|
+| `BMCU-DM-PRO-AMS-A-010.bin` | 100 mm |
+| `BMCU-DM-PRO-AMS-A-050.bin` | 500 mm |
+| `BMCU-DM-PRO-AMS-A-090.bin` | 900 mm |
+
+In all three cases, if the front/output microswitch clears at 180 mm, the
+motor stops at 180 mm — not at the compiled maximum.
+
+### Full suffix table
+
+| Suffix | Max retract fallback |
+|--------|---------------------|
 | _010   | 100 mm      |
 | _020   | 200 mm      |
 | _025   | 250 mm      |
@@ -123,36 +176,6 @@ front/output microswitch clearing — this distance is only a safety fallback.
 
 ---
 
-## Load / Unload behaviour
-
-### Loading (autoload)
-
-1. Insert filament from spool side.
-2. Rear/spool-side microswitch activates.
-3. Feeder motor begins advancing filament automatically.
-4. Front/output-side microswitch activates when filament arrives.
-5. Load complete.
-
-### Unloading
-
-1. Printer cuts filament and commands pull-back.
-2. Feeder retracts filament.
-3. Rear/spool microswitch may change — **this is ignored for unload completion**.
-4. Front/output microswitch transitions from present → absent.
-5. 50 ms debounce.
-6. Motor stops — **unload complete**.
-
-**Safety stops** (if front switch never clears):
-
-- `MAX_DISTANCE` — compiled maximum retract distance reached (the suffix value).
-- `TIMEOUT` — 90-second absolute timeout.
-- `ENCODER_FAULT` — AS5600 magnetic sensor failure.
-
-There is no hidden 100 mm fixed-distance jam fallback.  A jam condition aborts
-the unload as a fault; it does not silently switch to a short fixed retract.
-
----
-
 ## Firmware file table
 
 {table}
@@ -164,16 +187,17 @@ Do not flash a binary to the wrong hardware or the wrong AMS slot.*
 """
 
 TABLE_HEADER = """\
-| Filename | Role | AMS # | Max retract |
-|----------|------|-------|-------------|
+| Filename | Role | AMS # | Max retract fallback |
+|----------|------|-------|---------------------|
 """
 
 
 def build_readme(records: list, dist_dir: str) -> str:
     rows = []
     for r in records:
+        mm = r.get("retract_limit_mm") or r.get("retract_mm")
         rows.append(
-            f"| `{r['filename']}` | {r['role']} | {r['ams_num']} | {r['retract_mm']} mm |"
+            f"| `{r['filename']}` | {r['role']} | {r['ams_num']} | {mm} mm |"
         )
     table = TABLE_HEADER + "\n".join(rows)
     content = README_TEMPLATE.format(table=table)
@@ -213,7 +237,8 @@ def assemble_dist(bin_dir: str, dist_dir: str, records: list) -> None:
 
 
 def build_zips(dist_dir: str, zip_dir: str, records: list) -> list:
-    """Build per-role ZIPs and the ALL ZIP. Returns list of created zip paths."""
+    """Build per-role ZIPs, the ALL ZIP, and SHA256SUMS-PACKAGES.txt.
+    Returns list of created zip paths."""
     zip_paths = []
     readme_path = os.path.join(dist_dir, "README-FIRMWARE.md")
 
@@ -242,6 +267,22 @@ def build_zips(dist_dir: str, zip_dir: str, records: list) -> list:
 
     zip_paths.append(all_zip_path)
     print(f"[OK] BMCU-DM-PRO-ALL.zip")
+
+    # ── SHA256SUMS-PACKAGES.txt ───────────────────────────────────────────
+    # Checksums for all release packages and manifest files.
+    package_sums_path = os.path.join(zip_dir, "SHA256SUMS-PACKAGES.txt")
+    package_files = zip_paths + [
+        os.path.join(dist_dir, "manifest.json"),
+        os.path.join(dist_dir, "manifest.csv"),
+        os.path.join(dist_dir, "README-FIRMWARE.md"),
+    ]
+    with open(package_sums_path, "w", encoding="utf-8") as f:
+        for p in package_files:
+            if os.path.isfile(p):
+                digest = sha256_file(p)
+                f.write(f"{digest}  {os.path.basename(p)}\n")
+    print(f"[OK] SHA256SUMS-PACKAGES.txt -> {package_sums_path}")
+
     return zip_paths
 
 

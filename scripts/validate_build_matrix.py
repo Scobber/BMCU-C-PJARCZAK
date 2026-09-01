@@ -26,14 +26,30 @@ LENGTHS = ["010", "020", "025", "030", "035", "040", "045", "050",
 EXPECTED_ENVS = [f"dm_pro_{role}_{length}" for role in ROLES for length in LENGTHS]
 assert len(EXPECTED_ENVS) == 96, "Matrix must be exactly 96 entries"
 
+# Expected output filenames: each must be unique.
+EXPECTED_FILENAMES = {
+    f"BMCU-DM-PRO-{role.upper().replace('_', '-')}-{length}.bin"
+    for role in ROLES
+    for length in LENGTHS
+}
+
+
+def _role_label(role: str) -> str:
+    """Convert role key to the output label used in filenames (e.g. ams_a -> AMS-A)."""
+    return role.upper().replace("_", "-")
+
 
 def check_ini(ini_path: str) -> bool:
-    """Return True if platformio.ini contains exactly the 96 expected envs."""
+    """Return True iff platformio.ini contains exactly the 96 expected envs (no more, no less).
+
+    The only exempt environment is dm_pro_base (the shared configuration base).
+    Any other environment — missing or unexpected — is a hard failure.
+    """
     cfg = configparser.ConfigParser(strict=False)
     cfg.read(ini_path)
 
     present = {s[len("env:"):] for s in cfg.sections() if s.startswith("env:")}
-    # Remove base env
+    # dm_pro_base is the shared config base and is not a build target.
     present.discard("dm_pro_base")
 
     missing = [e for e in EXPECTED_ENVS if e not in present]
@@ -46,22 +62,28 @@ def check_ini(ini_path: str) -> bool:
             print(f"  - {e}")
         ok = False
     if extra:
-        print(f"[WARN] {len(extra)} unexpected environments in platformio.ini:")
+        # Hard failure: unexpected/legacy environments must be removed.
+        print(f"[FAIL] {len(extra)} unexpected environments found in platformio.ini "
+              f"(remove or rename them):")
         for e in extra:
             print(f"  - {e}")
+        ok = False
 
     if ok:
-        print(f"[OK] platformio.ini contains all {len(EXPECTED_ENVS)} expected environments.")
+        print(f"[OK] platformio.ini contains exactly {len(EXPECTED_ENVS)} expected environments.")
     return ok
 
 
 def check_bins(bin_dir: str) -> bool:
-    """Return True if bin_dir contains exactly one non-empty .bin per expected env."""
+    """Return True iff bin_dir contains exactly one non-empty firmware.bin per expected env,
+    no unexpected environment directories, and all generated filenames are unique.
+    """
     ok = True
     missing = []
     empty   = []
     found   = 0
 
+    # ── Expected binaries ────────────────────────────────────────────────────
     for env in EXPECTED_ENVS:
         path = os.path.join(bin_dir, env, "firmware.bin")
         if not os.path.isfile(path):
@@ -82,22 +104,62 @@ def check_bins(bin_dir: str) -> bool:
             print(f"  - {e}/firmware.bin")
         ok = False
 
-    # Validate role/length completeness
-    by_role = {}
+    # ── Unexpected staging directories ───────────────────────────────────────
+    expected_set = set(EXPECTED_ENVS)
+    if os.path.isdir(bin_dir):
+        unexpected_dirs = sorted(
+            d for d in os.listdir(bin_dir)
+            if os.path.isdir(os.path.join(bin_dir, d)) and d not in expected_set
+        )
+        if unexpected_dirs:
+            print(f"[FAIL] {len(unexpected_dirs)} unexpected directories in {bin_dir}:")
+            for d in unexpected_dirs:
+                print(f"  - {d}")
+            ok = False
+
+    # ── Role/length completeness ──────────────────────────────────────────────
+    by_role: dict = {}
     for env in EXPECTED_ENVS:
-        role = "_".join(env.split("_")[2:-1])  # dm_pro_{role}_{len}
-        by_role.setdefault(role, []).append(env)
+        # env = dm_pro_{role}_{length}; role may contain underscores (ams_a etc.)
+        length = env.split("_")[-1]
+        role   = "_".join(env.split("_")[2:-1])
+        by_role.setdefault(role, set()).add(length)
 
     for role in ROLES:
-        envs_for_role = by_role.get(role, [])
-        if len(envs_for_role) != len(LENGTHS):
-            print(f"[FAIL] Role {role}: expected {len(LENGTHS)} lengths, "
-                  f"found {len(envs_for_role)}")
+        lengths_found = by_role.get(role, set())
+        lengths_expected = set(LENGTHS)
+        if lengths_found != lengths_expected:
+            missing_l = sorted(lengths_expected - lengths_found)
+            extra_l   = sorted(lengths_found - lengths_expected)
+            print(f"[FAIL] Role {role}: length mismatch "
+                  f"(missing={missing_l}, extra={extra_l})")
             ok = False
+
+    # ── Filename uniqueness ───────────────────────────────────────────────────
+    generated_names: list[str] = []
+    for env in EXPECTED_ENVS:
+        length  = env.split("_")[-1]
+        role    = "_".join(env.split("_")[2:-1])
+        generated_names.append(f"BMCU-DM-PRO-{_role_label(role)}-{length}.bin")
+
+    seen: dict[str, str] = {}
+    duplicates: list[str] = []
+    for env, fname in zip(EXPECTED_ENVS, generated_names):
+        if fname in seen:
+            duplicates.append(f"{fname} <- {env} (already claimed by {seen[fname]})")
+        else:
+            seen[fname] = env
+    if duplicates:
+        print(f"[FAIL] {len(duplicates)} duplicate output filenames detected:")
+        for d in duplicates:
+            print(f"  - {d}")
+        ok = False
 
     if ok:
         print(f"[OK] All {found} firmware binaries present and non-empty.")
         print(f"[OK] All 6 roles have exactly 16 lengths.")
+        print(f"[OK] No unexpected staging directories.")
+        print(f"[OK] All {len(generated_names)} output filenames are unique.")
     return ok
 
 

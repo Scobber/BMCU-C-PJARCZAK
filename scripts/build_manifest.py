@@ -8,7 +8,6 @@ Expected staging layout:
   dist-stage/
     dm_pro_ams_a_010/
       firmware.bin
-      metadata.json        (written by the build job; contains env, role, etc.)
     ...
 
 Usage:
@@ -18,7 +17,8 @@ Usage:
       --git-sha  <SHA> \
       --git-ref  <ref> \
       --pio-version <ver> \
-      --py-version  <ver>
+      --py-version  <ver> \
+      [--run-id  <GitHub Actions run ID>]
 """
 
 import argparse
@@ -34,18 +34,58 @@ ROLES = ["ams_a", "ams_b", "ams_c", "ams_d", "solo", "lite"]
 LENGTHS = ["010", "020", "025", "030", "035", "040", "045", "050",
            "055", "060", "065", "070", "075", "080", "085", "090"]
 
-# Map role key → human label and AMS number
+# Map role key → human label, AMS number, and implementation note
 ROLE_META = {
-    "ams_a": {"label": "AMS-A", "ams_num": 0},
-    "ams_b": {"label": "AMS-B", "ams_num": 1},
-    "ams_c": {"label": "AMS-C", "ams_num": 2},
-    "ams_d": {"label": "AMS-D", "ams_num": 3},
-    "solo":  {"label": "SOLO",  "ams_num": 0},  # alias of AMS A (no distinct protocol impl)
-    "lite":  {"label": "LITE",  "ams_num": 0},  # alias of AMS A (no distinct protocol impl)
+    "ams_a": {
+        "label":   "AMS-A",
+        "ams_num": 0,
+        "impl_note": None,  # primary AMS slot A
+    },
+    "ams_b": {
+        "label":   "AMS-B",
+        "ams_num": 1,
+        "impl_note": None,
+    },
+    "ams_c": {
+        "label":   "AMS-C",
+        "ams_num": 2,
+        "impl_note": None,
+    },
+    "ams_d": {
+        "label":   "AMS-D",
+        "ams_num": 3,
+        "impl_note": None,
+    },
+    "solo": {
+        "label":   "SOLO",
+        "ams_num": 0,
+        "impl_note": (
+            "Currently protocol-equivalent to AMS A; "
+            "dedicated build flag (BMCU_DM_SOLO) reserved for future differentiation."
+        ),
+    },
+    "lite": {
+        "label":   "LITE",
+        "ams_num": 0,
+        "impl_note": (
+            "Currently protocol-equivalent to AMS A; "
+            "dedicated build flag (BMCU_DM_LITE) reserved for future differentiation."
+        ),
+    },
 }
 
 LENGTH_MM  = {l: int(l) * 10 for l in LENGTHS}   # "010" -> 100 mm
 LENGTH_M   = {l: int(l) / 100.0 for l in LENGTHS} # "010" -> 0.10 m
+
+# Fixed firmware-semantic fields that are the same for every record
+FIRMWARE_SEMANTICS = {
+    "product":                  "BMCU 370C DM PRO",
+    "target_printer":           "Bambu Lab A1",
+    "normal_unload_completion": "FRONT_SWITCH_CLEARED",
+    "rear_switch_function":     "autoload trigger",
+    "front_switch_function":    "normal unload completion",
+    "retract_limit_type":       "maximum/fallback distance",
+}
 
 
 def sha256_file(path: str) -> str:
@@ -56,74 +96,67 @@ def sha256_file(path: str) -> str:
     return h.hexdigest()
 
 
-def parse_env(env: str) -> dict:
-    """Parse environment name into role and length parts."""
-    # env = dm_pro_{role}_{len}  where role may be ams_a, ams_b, ..., solo, lite
-    parts = env.split("_")
-    # dm, pro, ..., length (last part)
-    length = parts[-1]
-    role = "_".join(parts[2:-1])
-    return {"role": role, "length": length}
-
-
 def build_manifest(bin_dir: str, out_dir: str, git_sha: str, git_ref: str,
-                   pio_version: str, py_version: str) -> None:
+                   pio_version: str, py_version: str, run_id: str) -> None:
     os.makedirs(out_dir, exist_ok=True)
     timestamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     records = []
     for role in ROLES:
+        meta = ROLE_META[role]
         for length in LENGTHS:
-            env = f"dm_pro_{role}_{length}"
+            env      = f"dm_pro_{role}_{length}"
+            filename = f"BMCU-DM-PRO-{meta['label']}-{length}.bin"
             bin_path = os.path.join(bin_dir, env, "firmware.bin")
-            renamed  = f"BMCU-DM-PRO-{ROLE_META[role]['label']}-{length}.bin"
+
+            base = {
+                "environment":            env,
+                "filename":               filename,
+                # ── role identity ──
+                "role":                   meta["label"],
+                "ams_num":                meta["ams_num"],
+                "implementation_note":    meta["impl_note"],
+                # ── firmware semantics ──
+                **FIRMWARE_SEMANTICS,
+                # ── retract limit ──
+                "retract_limit_mm":       LENGTH_MM[length],
+                "retract_limit_m":        LENGTH_M[length],
+                # ── reproducibility ──
+                "git_sha":                git_sha,
+                "git_ref":                git_ref,
+                "workflow_run_id":        run_id,
+                "pio_version":            pio_version,
+                "python_version":         py_version,
+                "build_time_utc":         timestamp,
+            }
 
             if not os.path.isfile(bin_path):
                 print(f"[WARN] Missing: {bin_path}", file=sys.stderr)
                 records.append({
-                    "environment":    env,
-                    "filename":       renamed,
-                    "role":           ROLE_META[role]["label"],
-                    "ams_num":        ROLE_META[role]["ams_num"],
-                    "retract_mm":     LENGTH_MM[length],
-                    "retract_m":      LENGTH_M[length],
-                    "size_bytes":     None,
-                    "sha256":         None,
-                    "git_sha":        git_sha,
-                    "git_ref":        git_ref,
-                    "pio_version":    pio_version,
-                    "python_version": py_version,
-                    "build_time_utc": timestamp,
-                    "build_result":   "MISSING",
+                    **base,
+                    "firmware_size_bytes": None,
+                    "sha256":              None,
+                    "build_result":        "MISSING",
                 })
                 continue
 
             size   = os.path.getsize(bin_path)
             digest = sha256_file(bin_path)
             records.append({
-                "environment":    env,
-                "filename":       renamed,
-                "role":           ROLE_META[role]["label"],
-                "ams_num":        ROLE_META[role]["ams_num"],
-                "retract_mm":     LENGTH_MM[length],
-                "retract_m":      LENGTH_M[length],
-                "size_bytes":     size,
-                "sha256":         digest,
-                "git_sha":        git_sha,
-                "git_ref":        git_ref,
-                "pio_version":    pio_version,
-                "python_version": py_version,
-                "build_time_utc": timestamp,
-                "build_result":   "SUCCESS",
+                **base,
+                "firmware_size_bytes": size,
+                "sha256":              digest,
+                "build_result":        "SUCCESS",
             })
 
     # ── manifest.json ─────────────────────────────────────────────────────
     json_path = os.path.join(out_dir, "manifest.json")
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump({
-            "generated_utc": timestamp,
+            "generated_utc":  timestamp,
             "git_sha":        git_sha,
             "git_ref":        git_ref,
+            "workflow_run_id": run_id,
             "pio_version":    pio_version,
             "python_version": py_version,
             "total_builds":   len(records),
@@ -134,14 +167,18 @@ def build_manifest(bin_dir: str, out_dir: str, git_sha: str, git_ref: str,
     # ── manifest.csv ──────────────────────────────────────────────────────
     csv_path = os.path.join(out_dir, "manifest.csv")
     fieldnames = [
-        "environment", "filename", "role", "ams_num",
-        "retract_mm", "retract_m",
-        "size_bytes", "sha256",
-        "git_sha", "git_ref", "pio_version", "python_version",
+        "environment", "filename",
+        "role", "ams_num", "implementation_note",
+        "product", "target_printer",
+        "normal_unload_completion", "rear_switch_function", "front_switch_function",
+        "retract_limit_mm", "retract_limit_m", "retract_limit_type",
+        "firmware_size_bytes", "sha256",
+        "git_sha", "git_ref", "workflow_run_id",
+        "pio_version", "python_version",
         "build_time_utc", "build_result",
     ]
     with open(csv_path, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
         w.writeheader()
         w.writerows(records)
     print(f"[OK] manifest.csv  -> {csv_path}")
@@ -173,6 +210,8 @@ def main() -> None:
     parser.add_argument("--git-ref",     default="unknown")
     parser.add_argument("--pio-version", default="unknown")
     parser.add_argument("--py-version",  default="unknown")
+    parser.add_argument("--run-id",      default="unknown",
+                        help="GitHub Actions workflow run ID")
     args = parser.parse_args()
 
     build_manifest(
@@ -182,6 +221,7 @@ def main() -> None:
         git_ref=args.git_ref,
         pio_version=args.pio_version,
         py_version=args.py_version,
+        run_id=args.run_id,
     )
 
 

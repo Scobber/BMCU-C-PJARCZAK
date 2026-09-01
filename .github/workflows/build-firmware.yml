@@ -11,20 +11,6 @@ name: Build DM PRO Firmware
 
 on:
   workflow_dispatch:
-    inputs:
-      role_filter:
-        description: "Role to build (full = all 96)"
-        required: false
-        default: "full"
-        type: choice
-        options:
-          - full
-          - ams_a
-          - ams_b
-          - ams_c
-          - ams_d
-          - solo
-          - lite
   pull_request:
   push:
     branches:
@@ -196,14 +182,6 @@ jobs:
           mkdir -p dist-stage/${{ matrix.environment }}
           cp .pio/build/${{ matrix.environment }}/firmware.bin \
              dist-stage/${{ matrix.environment }}/firmware.bin
-          # Write per-env metadata used later by build_manifest.py
-          cat > dist-stage/${{ matrix.environment }}/metadata.json <<EOF
-          {
-            "environment": "${{ matrix.environment }}",
-            "git_sha":     "${{ github.sha }}",
-            "git_ref":     "${{ github.ref }}"
-          }
-          EOF
 
       - name: Upload temporary build artifact
         uses: actions/upload-artifact@v4
@@ -269,7 +247,8 @@ jobs:
             --git-sha  "${{ github.sha }}" \
             --git-ref  "${{ github.ref }}" \
             --pio-version "$PIO_VER" \
-            --py-version  "$PY_VER"
+            --py-version  "$PY_VER" \
+            --run-id   "${{ github.run_id }}"
 
       # ── Assemble dist/ layout and ZIP files ───────────────────────────
       - name: Package firmware
@@ -385,6 +364,7 @@ jobs:
             dist/manifest.csv
             dist/SHA256SUMS.txt
             dist/README-FIRMWARE.md
+            SHA256SUMS-PACKAGES.txt
           retention-days: 90
 
   # ───────────────────────────────────────────────────────────────────────────
@@ -475,6 +455,7 @@ jobs:
 
             ### Checksums
 
-            SHA-256 checksums are in `SHA256SUMS.txt` and `manifest.json`.
+            SHA-256 checksums for firmware binaries are in `SHA256SUMS.txt` and `manifest.json`.
+            SHA-256 checksums for release packages are in `SHA256SUMS-PACKAGES.txt`.
           files: release-assets/**
           token: ${{ secrets.GITHUB_TOKEN }}
